@@ -13,6 +13,10 @@
     "sail": false,
     "skills": [
         "wayfinder-development",
-        "pest-testing"
+        "pest-testing",
+        "inertia-react-development",
+        "tailwindcss-development",
+        "echo-react-development",
+        "echo-development"
     ]
 }
