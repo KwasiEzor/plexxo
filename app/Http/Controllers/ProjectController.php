@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProjectRequest;
 use App\Jobs\GenerateProjectOutline;
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -72,5 +73,26 @@ class ProjectController extends Controller
             ->toMediaCollection('cover');
 
         return back()->with('success', 'Couverture mise à jour !');
+    }
+
+    /**
+     * Invite a user to the project.
+     */
+    public function invite(Request $request, Project $project)
+    {
+        $this->authorize('update', $project);
+
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'role' => 'required|string|in:viewer,editor,admin',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        $project->collaborators()->syncWithoutDetaching([
+            $user->id => ['role' => $request->role],
+        ]);
+
+        return back()->with('success', 'Utilisateur invité avec succès.');
     }
 }

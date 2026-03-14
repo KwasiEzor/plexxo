@@ -18,7 +18,7 @@ Plateforme d'édition collaborative augmentée par l'IA (Ebook Forge).
 - [x] Journal d'activité (Spatie ActivityLog).
 
 ## 🤝 Phase 2 : Collaboration & Équipes (En cours)
-- [ ] Système d'invitation de membres.
+- [x] Système d'invitation de membres (TDD validé).
 - [ ] Gestion des rôles (Admin, Éditeur, Lecteur).
 - [ ] Permissions granulaires sur les projets.
 - [ ] Indicateurs de présence en temps réel (Presence Channels).

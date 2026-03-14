@@ -62,4 +62,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Project::class);
     }
+
+    /**
+     * Get the projects the user is collaborating on.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Project>
+     */
+    public function collaborations(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Project::class)->withPivot('role')->withTimestamps();
+    }
 }

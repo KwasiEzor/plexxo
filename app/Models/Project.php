@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,7 +15,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Project extends Model implements HasMedia
 {
-    use HasSlug, InteractsWithMedia, LogsActivity;
+    use HasSlug, InteractsWithMedia, LogsActivity, HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -81,5 +82,15 @@ class Project extends Model implements HasMedia
     public function chapters(): HasMany
     {
         return $this->hasMany(Chapter::class)->orderBy('order');
+    }
+
+    /**
+     * Get the collaborators for the project.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<User>
+     */
+    public function collaborators(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class)->withPivot('role')->withTimestamps();
     }
 }
