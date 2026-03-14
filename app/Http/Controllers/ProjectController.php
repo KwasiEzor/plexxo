@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ProjectStatus;
 use App\Http\Requests\StoreProjectRequest;
 use App\Jobs\GenerateProjectOutline;
 use App\Models\Project;
@@ -37,7 +38,7 @@ class ProjectController extends Controller
             'language' => $request->language,
             'template_id' => $request->template_id,
             'description' => $request->description,
-            'status' => 'pending',
+            'status' => ProjectStatus::Pending,
         ]);
 
         GenerateProjectOutline::dispatch($project);

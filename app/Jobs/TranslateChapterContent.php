@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\ChapterStatus;
 use App\Events\ChapterUpdated;
 use App\Models\Chapter;
 use App\Services\AI\TranslatorAgent;
@@ -30,20 +31,20 @@ class TranslateChapterContent implements ShouldQueue
     public function handle(TranslatorAgent $agent): void
     {
         try {
-            $this->chapter->update(['status' => 'translating']);
+            $this->chapter->update(['status' => ChapterStatus::Translating]);
             event(new ChapterUpdated($this->chapter));
 
             $translatedContent = $agent->translate($this->chapter, $this->targetLanguage);
 
             $this->chapter->update([
                 'content' => $translatedContent,
-                'status' => 'translated',
+                'status' => ChapterStatus::Translated,
             ]);
 
             event(new ChapterUpdated($this->chapter));
         } catch (Exception $e) {
             Log::error("Failed to translate content for chapter {$this->chapter->id}: ".$e->getMessage());
-            $this->chapter->update(['status' => 'failed']);
+            $this->chapter->update(['status' => ChapterStatus::Failed]);
             event(new ChapterUpdated($this->chapter));
         }
     }

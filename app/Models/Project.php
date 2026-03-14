@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ProjectStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,6 +33,18 @@ class Project extends Model implements HasMedia
         'template_id',
         'description',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'status' => ProjectStatus::class,
+        ];
+    }
 
     /**
      * Get the options for generating the slug.
@@ -105,6 +118,9 @@ class Project extends Model implements HasMedia
      */
     public function collaborators(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withPivot('role')->withTimestamps();
+        return $this->belongsToMany(User::class)
+            ->withPivot('role')
+            ->withTimestamps()
+            ->using(ProjectUser::class);
     }
 }

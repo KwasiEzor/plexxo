@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\UserRole;
 use App\Models\Project;
 use App\Models\User;
 
@@ -41,10 +42,11 @@ class ProjectPolicy
             return true;
         }
 
-        return $project->collaborators()
+        $collaborator = $project->collaborators()
             ->where('user_id', $user->id)
-            ->wherePivotIn('role', ['editor', 'admin'])
-            ->exists();
+            ->first();
+
+        return $collaborator?->pivot->role->canUpdate() ?? false;
     }
 
     /**
@@ -56,9 +58,10 @@ class ProjectPolicy
             return true;
         }
 
-        return $project->collaborators()
+        $collaborator = $project->collaborators()
             ->where('user_id', $user->id)
-            ->wherePivot('role', 'admin')
-            ->exists();
+            ->first();
+
+        return $collaborator?->pivot->role->isAdmin() ?? false;
     }
 }

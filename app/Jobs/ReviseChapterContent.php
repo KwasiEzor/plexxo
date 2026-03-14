@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\ChapterStatus;
 use App\Events\ChapterUpdated;
 use App\Models\Chapter;
 use App\Services\AI\ReviewerAgent;
@@ -30,7 +31,7 @@ class ReviseChapterContent implements ShouldQueue
     public function handle(ReviewerAgent $agent): void
     {
         try {
-            $this->chapter->update(['status' => 'revising']);
+            $this->chapter->update(['status' => ChapterStatus::Revising]);
             event(new ChapterUpdated($this->chapter));
 
             $review = $agent->review($this->chapter);
@@ -38,13 +39,13 @@ class ReviseChapterContent implements ShouldQueue
             // In a more complex app, we'd store the tone/suggestions in a separate table/meta
             $this->chapter->update([
                 'content' => $review['revised_content'],
-                'status' => 'revised',
+                'status' => ChapterStatus::Revised,
             ]);
 
             event(new ChapterUpdated($this->chapter));
         } catch (Exception $e) {
             Log::error("Failed to revise content for chapter {$this->chapter->id}: ".$e->getMessage());
-            $this->chapter->update(['status' => 'failed']);
+            $this->chapter->update(['status' => ChapterStatus::Failed]);
             event(new ChapterUpdated($this->chapter));
         }
     }

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\SourceStatus;
+use App\Enums\SourceType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
@@ -18,6 +20,19 @@ class Source extends Model implements HasMedia
         'content',
         'status',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'status' => SourceStatus::class,
+            'type' => SourceType::class,
+        ];
+    }
 
     /**
      * Get the project that owns the source.

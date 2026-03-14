@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\SourceStatus;
+use App\Enums\SourceType;
 use App\Jobs\ProcessSourceDocument;
 use App\Models\Project;
 use App\Models\Source;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Inertia\Inertia;
 
 class SourceController extends Controller
 {
@@ -27,8 +28,8 @@ class SourceController extends Controller
 
         $source = $project->sources()->create([
             'title' => $file->getClientOriginalName(),
-            'type' => $extension,
-            'status' => 'pending',
+            'type' => SourceType::from($extension),
+            'status' => SourceStatus::Pending,
         ]);
 
         $source->addMedia($file)->toMediaCollection('sources');

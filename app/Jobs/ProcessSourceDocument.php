@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\SourceStatus;
 use App\Models\Source;
 use App\Services\AI\DocumentExtractor;
 use Exception;
@@ -27,23 +28,23 @@ class ProcessSourceDocument implements ShouldQueue
      */
     public function handle(DocumentExtractor $extractor): void
     {
-        $this->source->update(['status' => 'processing']);
+        $this->source->update(['status' => SourceStatus::Processing]);
 
         try {
             $media = $this->source->getFirstMedia('sources');
-            
-            if (!$media) {
+
+            if (! $media) {
                 throw new Exception("Media not found for source #{$this->source->id}");
             }
 
-            $content = $extractor->extract($media->getPath(), $this->source->type);
+            $content = $extractor->extract($media->getPath(), $this->source->type->value);
 
             $this->source->update([
                 'content' => $content,
-                'status' => 'completed',
+                'status' => SourceStatus::Completed,
             ]);
         } catch (Exception $e) {
-            $this->source->update(['status' => 'failed']);
+            $this->source->update(['status' => SourceStatus::Failed]);
             throw $e;
         }
     }

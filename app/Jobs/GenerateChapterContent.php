@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Enums\ChapterStatus;
+use App\Enums\SourceStatus;
 use App\Events\ChapterUpdated;
 use App\Models\Chapter;
 use App\Services\AI\AIOrchestrator;
@@ -27,14 +29,14 @@ class GenerateChapterContent implements ShouldQueue
     public function handle(): void
     {
         try {
-            $this->chapter->update(['status' => 'generating']);
+            $this->chapter->update(['status' => ChapterStatus::Generating]);
 
             // Broadcast the status change
             event(new ChapterUpdated($this->chapter));
 
             // Gather context from sources
             $sources = $this->chapter->project->sources()
-                ->where('status', 'completed')
+                ->where('status', SourceStatus::Completed)
                 ->get();
 
             $context = $sources->map(fn($source) => "SOURCE: {$source->title}\nCONTENU: {$source->content}")->join("\n---\n");
@@ -60,13 +62,13 @@ class GenerateChapterContent implements ShouldQueue
 
             $this->chapter->update([
                 'content' => $content,
-                'status' => 'draft',
+                'status' => ChapterStatus::Draft,
             ]);
 
             event(new ChapterUpdated($this->chapter));
         } catch (\Exception $e) {
             Log::error("Failed to generate content for chapter {$this->chapter->id}: ".$e->getMessage());
-            $this->chapter->update(['status' => 'failed']);
+            $this->chapter->update(['status' => ChapterStatus::Failed]);
             event(new ChapterUpdated($this->chapter));
         }
     }
