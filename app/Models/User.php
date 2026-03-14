@@ -75,4 +75,14 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Project::class)->withPivot('role')->withTimestamps();
     }
+
+    /**
+     * Get the comments for the user.
+     *
+     * @return HasMany<Comment, $this>
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

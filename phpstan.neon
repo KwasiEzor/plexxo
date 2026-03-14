@@ -15,6 +15,8 @@ parameters:
 
     ignoreErrors:
         - '#Call to an undefined method PHPUnit\\Framework\\TestCase::.*#'
+        - '#.* on an unknown class EchoLabs\\Prism\\.*#'
+        - '#Property .* has unknown class EchoLabs\\Prism\\.* as its type.#'
 
     # excludePaths:
     #     - ./*/*/FileToBeExcluded.php

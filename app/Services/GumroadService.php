@@ -20,7 +20,7 @@ class GumroadService
      */
     public function createProduct(Project $project): array
     {
-        if (empty($this->token)) {
+        if ($this->token === '' || $this->token === '0') {
             throw new Exception('Gumroad API token not configured.');
         }
 

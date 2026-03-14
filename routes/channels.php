@@ -4,7 +4,7 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
-Broadcast::channel('project.{id}', function (User $user, $id) {
+Broadcast::channel('project.{id}', function (User $user, $id): false|array {
     $project = Project::find($id);
 
     if (! $project) {

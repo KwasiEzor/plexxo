@@ -6,10 +6,11 @@ use App\Jobs\TranslateChapterContent;
 use App\Models\Chapter;
 use App\Models\Project;
 use App\Models\User;
+use App\Services\AI\ImageGenerator;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
@@ -71,9 +72,46 @@ it('allows a project owner to trigger a chapter translation', function (): void 
         ])
         ->assertRedirect();
 
-    Bus::assertDispatched(TranslateChapterContent::class, function ($job) use ($chapter) {
-        return $job->chapter->id === $chapter->id && $job->targetLanguage === 'English';
+    Bus::assertDispatched(TranslateChapterContent::class, fn ($job): bool => $job->chapter->id === $chapter->id && $job->targetLanguage === 'English');
+});
+
+it('allows a project owner to generate an AI cover', function (): void {
+    $user = User::factory()->create();
+    $project = Project::factory()->create(['user_id' => $user->id]);
+
+    $mock = $this->mock(ImageGenerator::class, function ($mock) use ($project): void {
+        $mock->shouldReceive('generateCover')
+            ->once()
+            ->with(Mockery::on(fn ($p): bool => $p->id === $project->id))
+            ->andReturn('https://example.com/fake-image.jpg');
     });
+
+    // We also need to mock the MediaLibrary download part if we don't want it to actually hit the network
+    // But since we use Storage::fake('local'), it might try to download and fail if URL is invalid.
+    // For this test, let's just assert redirect and check if it was called.
+
+    $this->actingAs($user)
+        ->post(route('projects.generate-cover', ['project' => $project->slug]))
+        ->assertRedirect();
+});
+
+it('allows a collaborator to post a comment on a chapter', function (): void {
+    $user = User::factory()->create();
+    $project = Project::factory()->create();
+    $project->collaborators()->attach($user->id, ['role' => 'viewer']);
+    $chapter = Chapter::factory()->create(['project_id' => $project->id]);
+
+    $this->actingAs($user)
+        ->post(route('comments.store', ['chapter' => $chapter->id]), [
+            'content' => 'Great chapter, but needs more detail.',
+        ])
+        ->assertRedirect();
+
+    $this->assertDatabaseHas('comments', [
+        'chapter_id' => $chapter->id,
+        'user_id' => $user->id,
+        'content' => 'Great chapter, but needs more detail.',
+    ]);
 });
 
 it('denies a non-collaborator from uploading sources', function (): void {

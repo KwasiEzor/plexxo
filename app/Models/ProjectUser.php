@@ -5,6 +5,9 @@ namespace App\Models;
 use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
+/**
+ * @property UserRole $role
+ */
 class ProjectUser extends Pivot
 {
     /**
@@ -12,6 +15,7 @@ class ProjectUser extends Pivot
      *
      * @return array<string, string>
      */
+    #[\Override]
     protected function casts(): array
     {
         return [

@@ -32,6 +32,12 @@ export default function CoverManager({ project, coverUrl }: CoverManagerProps) {
         }
     };
 
+    const handleGenerate = () => {
+        router.post(route('projects.generate-cover', { project: project.slug }), {}, {
+            preserveScroll: true
+        });
+    };
+
     return (
         <div className="space-y-4">
             <div className="relative aspect-[2/3] w-full max-w-[200px] mx-auto rounded-lg overflow-hidden border-2 border-dashed border-muted-foreground/20 flex items-center justify-center bg-muted/30">
@@ -63,7 +69,7 @@ export default function CoverManager({ project, coverUrl }: CoverManagerProps) {
                     <Upload className="mr-2 h-3 w-3" />
                     Uploader
                 </Button>
-                <Button variant="outline" size="sm" className="text-purple-500" disabled={processing}>
+                <Button variant="outline" size="sm" className="text-purple-500" onClick={handleGenerate} disabled={processing}>
                     <Sparkles className="mr-2 h-3 w-3" />
                     IA Cover
                 </Button>

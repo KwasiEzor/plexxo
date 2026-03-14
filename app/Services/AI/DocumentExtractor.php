@@ -42,11 +42,11 @@ class DocumentExtractor
         foreach ($phpWord->getSections() as $section) {
             foreach ($section->getElements() as $element) {
                 if (method_exists($element, 'getText')) {
-                    $content .= $element->getText() . "\n";
+                    $content .= $element->getText()."\n";
                 } elseif (method_exists($element, 'getElements')) {
                     foreach ($element->getElements() as $childElement) {
                         if (method_exists($childElement, 'getText')) {
-                            $content .= $childElement->getText() . "\n";
+                            $content .= $childElement->getText()."\n";
                         }
                     }
                 }

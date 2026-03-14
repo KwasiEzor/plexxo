@@ -192,6 +192,87 @@ export default function Welcome() {
                 </div>
             </section>
 
+            {/* Pricing Section */}
+            <section id="pricing" className="py-24 bg-muted/30">
+                <div className="container mx-auto px-6">
+                    <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                        <h2 className="text-3xl md:text-4xl font-bold tracking-tight">Des tarifs simples pour tous les auteurs</h2>
+                        <p className="text-muted-foreground text-lg">Commencez gratuitement et passez à la vitesse supérieure quand vous êtes prêt.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                        {/* Free Plan */}
+                        <div className="flex flex-col p-8 rounded-3xl bg-background border transition-all hover:shadow-lg">
+                            <div className="mb-8">
+                                <h3 className="text-xl font-bold mb-2">Gratuit</h3>
+                                <p className="text-muted-foreground text-sm">Pour découvrir la puissance de Plexxo.</p>
+                            </div>
+                            <div className="mb-8">
+                                <span className="text-4xl font-black">0€</span>
+                                <span className="text-muted-foreground">/mois</span>
+                            </div>
+                            <ul className="space-y-4 mb-8 flex-1">
+                                <li className="flex items-center text-sm">
+                                    <CheckCircle2 className="mr-3 h-5 w-5 text-green-500" />
+                                    1 Projet actif
+                                </li>
+                                <li className="flex items-center text-sm">
+                                    <CheckCircle2 className="mr-3 h-5 w-5 text-green-500" />
+                                    Génération de plan IA
+                                </li>
+                                <li className="flex items-center text-sm">
+                                    <CheckCircle2 className="mr-3 h-5 w-5 text-green-500" />
+                                    Export PDF standard
+                                </li>
+                            </ul>
+                            <Button variant="outline" className="w-full rounded-xl h-12" asChild>
+                                <Link href="/register">Commencer</Link>
+                            </Button>
+                        </div>
+
+                        {/* Premium Plan */}
+                        <div className="flex flex-col p-8 rounded-3xl bg-background border-2 border-indigo-600 relative transition-all hover:shadow-xl shadow-indigo-500/10">
+                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-indigo-600 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                                Recommandé
+                            </div>
+                            <div className="mb-8">
+                                <h3 className="text-xl font-bold mb-2">Premium</h3>
+                                <p className="text-muted-foreground text-sm">Pour les auteurs et créateurs sérieux.</p>
+                            </div>
+                            <div className="mb-8">
+                                <span className="text-4xl font-black">19€</span>
+                                <span className="text-muted-foreground">/mois</span>
+                            </div>
+                            <ul className="space-y-4 mb-8 flex-1">
+                                <li className="flex items-center text-sm">
+                                    <CheckCircle2 className="mr-3 h-5 w-5 text-green-500" />
+                                    Projets illimités
+                                </li>
+                                <li className="flex items-center text-sm">
+                                    <CheckCircle2 className="mr-3 h-5 w-5 text-green-500" />
+                                    RAG & Sources privées
+                                </li>
+                                <li className="flex items-center text-sm">
+                                    <CheckCircle2 className="mr-3 h-5 w-5 text-green-500" />
+                                    Export EPUB 3 & HTML SEO
+                                </li>
+                                <li className="flex items-center text-sm">
+                                    <CheckCircle2 className="mr-3 h-5 w-5 text-green-500" />
+                                    Agent Réviseur & Traduction
+                                </li>
+                                <li className="flex items-center text-sm">
+                                    <CheckCircle2 className="mr-3 h-5 w-5 text-green-500" />
+                                    Publication directe Gumroad/KDP
+                                </li>
+                            </ul>
+                            <Button className="w-full rounded-xl h-12 bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/20" asChild>
+                                <Link href="/register">Devenir Premium</Link>
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* CTA Section */}
             <section className="py-24">
                 <div className="container mx-auto px-6 text-center">

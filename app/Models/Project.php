@@ -15,6 +15,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
+/**
+ * @property ProjectStatus $status
+ */
 class Project extends Model implements HasMedia
 {
     use HasFactory, HasSlug, InteractsWithMedia, LogsActivity;
@@ -39,6 +42,7 @@ class Project extends Model implements HasMedia
      *
      * @return array<string, string>
      */
+    #[\Override]
     protected function casts(): array
     {
         return [
@@ -114,7 +118,7 @@ class Project extends Model implements HasMedia
     /**
      * Get the collaborators for the project.
      *
-     * @return BelongsToMany<User, $this>
+     * @return BelongsToMany<User, $this, ProjectUser>
      */
     public function collaborators(): BelongsToMany
     {

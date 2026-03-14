@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
+/**
+ * @property SourceType $type
+ * @property SourceStatus $status
+ */
 class Source extends Model implements HasMedia
 {
     use InteractsWithMedia;
@@ -26,6 +30,7 @@ class Source extends Model implements HasMedia
      *
      * @return array<string, string>
      */
+    #[\Override]
     protected function casts(): array
     {
         return [

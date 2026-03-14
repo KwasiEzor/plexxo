@@ -4,6 +4,22 @@ export type SourceStatus = 'pending' | 'processing' | 'completed' | 'failed';
 export type SourceType = 'pdf' | 'docx';
 export type UserRole = 'admin' | 'editor' | 'viewer';
 
+export interface User {
+    id: number;
+    name: string;
+    email: string;
+}
+
+export interface Comment {
+    id: number;
+    user_id: number;
+    chapter_id: number;
+    content: string;
+    is_resolved: boolean;
+    created_at: string;
+    user?: User;
+}
+
 export interface Project {
     id: number;
     user_id: number;
@@ -29,6 +45,7 @@ export interface Chapter {
     status: ChapterStatus;
     created_at: string;
     updated_at: string;
+    comments?: Comment[];
 }
 
 export interface Source {

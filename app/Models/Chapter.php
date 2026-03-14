@@ -3,13 +3,18 @@
 namespace App\Models;
 
 use App\Enums\ChapterStatus;
+use Database\Factories\ChapterFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property ChapterStatus $status
+ */
 class Chapter extends Model
 {
-    /** @use HasFactory<\Database\Factories\ChapterFactory> */
+    /** @use HasFactory<ChapterFactory> */
     use HasFactory;
 
     /**
@@ -30,6 +35,7 @@ class Chapter extends Model
      *
      * @return array<string, string>
      */
+    #[\Override]
     protected function casts(): array
     {
         return [
@@ -45,5 +51,15 @@ class Chapter extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    /**
+     * Get the comments for the chapter.
+     *
+     * @return HasMany<Comment, $this>
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
     }
 }

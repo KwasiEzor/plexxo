@@ -3,18 +3,19 @@
 namespace App\Services\AI;
 
 use App\Models\Chapter;
-use EchoLabs\Prism\Prism;
 use EchoLabs\Prism\Enums\Provider;
+use EchoLabs\Prism\Prism;
 
 class ReviewerAgent
 {
     protected string $model;
+
     protected Provider $provider;
 
     public function __construct()
     {
         $defaultProvider = config('ai.default', 'openai');
-        
+
         $this->provider = match ($defaultProvider) {
             'anthropic' => Provider::Anthropic,
             default => Provider::OpenAI,
@@ -25,7 +26,7 @@ class ReviewerAgent
 
     /**
      * Review the content of a chapter.
-     * 
+     *
      * @return array{tone: string, style: string, grammar: string, suggestions: string[], revised_content: string}
      */
     public function review(Chapter $chapter): array
@@ -56,9 +57,9 @@ PROMPT;
 
         // Using a simple JSON decode as a placeholder for structured output
         // In a real scenario, we could use Prism's structured response features
-        $data = json_decode($response->text, true);
+        $data = json_decode((string) $response->text, true);
 
-        if (!$data || !isset($data['revised_content'])) {
+        if (! $data || ! isset($data['revised_content'])) {
             // Fallback if the AI didn't return perfect JSON
             return [
                 'tone' => 'Analyse indisponible',

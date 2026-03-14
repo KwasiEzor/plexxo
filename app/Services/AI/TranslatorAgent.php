@@ -3,18 +3,19 @@
 namespace App\Services\AI;
 
 use App\Models\Chapter;
-use EchoLabs\Prism\Prism;
 use EchoLabs\Prism\Enums\Provider;
+use EchoLabs\Prism\Prism;
 
 class TranslatorAgent
 {
     protected string $model;
+
     protected Provider $provider;
 
     public function __construct()
     {
         $defaultProvider = config('ai.default', 'openai');
-        
+
         $this->provider = match ($defaultProvider) {
             'anthropic' => Provider::Anthropic,
             default => Provider::OpenAI,

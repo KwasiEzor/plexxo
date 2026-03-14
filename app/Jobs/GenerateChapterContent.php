@@ -39,7 +39,7 @@ class GenerateChapterContent implements ShouldQueue
                 ->where('status', SourceStatus::Completed)
                 ->get();
 
-            $context = $sources->map(fn($source) => "SOURCE: {$source->title}\nCONTENU: {$source->content}")->join("\n---\n");
+            $context = $sources->map(fn ($source): string => "SOURCE: {$source->title}\nCONTENU: {$source->content}")->join("\n---\n");
 
             $ai = AIOrchestrator::provider();
 

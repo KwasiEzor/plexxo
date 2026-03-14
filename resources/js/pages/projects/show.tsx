@@ -32,6 +32,7 @@ import { useState, useEffect } from 'react';
 import { useEcho, useEchoPresence } from '@laravel/echo-react';
 import PresenceAvatars from '@/components/presence-avatars';
 import SourceList from '@/components/source-list';
+import CommentSidebar from '@/components/comment-sidebar';
 
 interface ProjectShowProps {
     project: Project;
@@ -126,6 +127,10 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
         window.open(route('projects.export-html', { project: project.slug }), '_blank');
     };
 
+    const handleExportEpub = () => {
+        window.open(route('projects.export-epub', { project: project.slug }), '_blank');
+    };
+
     const handlePublish = () => {
         if (confirm('Voulez-vous publier ce projet sur Gumroad ?')) {
             router.post(route('projects.publish', { project: project.slug }));
@@ -202,8 +207,9 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
                 {/* Main: Editor */}
                 <main className="flex-1 flex flex-col bg-background overflow-hidden">
                     {activeChapter ? (
-                        <>
-                            <header className="px-6 py-4 border-b flex justify-between items-center">
+                        <div className="flex-1 flex overflow-hidden">
+                            <div className="flex-1 flex flex-col overflow-hidden">
+                                <header className="px-6 py-4 border-b flex justify-between items-center">
                                 <div>
                                     <h1 className="text-xl font-bold">{activeChapter.title}</h1>
                                     <div className="flex items-center space-x-2 mt-1">
@@ -280,7 +286,12 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
 
                                     <Button size="sm" variant="outline" onClick={handleExportHtml}>
                                         <FileText className="mr-2 h-4 w-4" />
-                                        HTML (SEO)
+                                        HTML
+                                    </Button>
+
+                                    <Button size="sm" variant="outline" onClick={handleExportEpub}>
+                                        <Book className="mr-2 h-4 w-4" />
+                                        EPUB
                                     </Button>
 
                                     <Button size="sm" variant="secondary" onClick={handlePublish}>
@@ -300,7 +311,8 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
                                     />
                                 </div>
                             </div>
-                        </>
+                            <CommentSidebar chapter={activeChapter} />
+                        </div>
                     ) : (
                         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
                             <FileText className="h-12 w-12 text-muted-foreground mb-4" />

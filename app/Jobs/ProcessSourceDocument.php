@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ProcessSourceDocument implements ShouldQueue
 {
@@ -33,7 +34,7 @@ class ProcessSourceDocument implements ShouldQueue
         try {
             $media = $this->source->getFirstMedia('sources');
 
-            if (! $media) {
+            if (! $media instanceof Media) {
                 throw new Exception("Media not found for source #{$this->source->id}");
             }
 

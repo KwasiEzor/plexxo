@@ -33,5 +33,11 @@ Plateforme d'édition collaborative augmentée par l'IA (Ebook Forge).
 - [x] Abonnements Stripe (Cashier initialisé).
 - [x] Optimisation SEO des exports HTML.
 
+## 🎨 Phase 5 : Illustrations IA & Formats Pro (Terminée)
+- [x] Génération d'images pour les couvertures (DALL-E 3).
+- [x] Export format EPUB (Standard industriel).
+- [x] Landing Page marketing (Conversion).
+- [x] Système de commentaires sur les chapitres.
+
 ---
 *Dernière mise à jour : 14 Mars 2026*

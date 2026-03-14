@@ -7,6 +7,7 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Jobs\GenerateProjectOutline;
 use App\Models\Project;
 use App\Models\User;
+use App\Services\AI\ImageGenerator;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -54,7 +55,10 @@ class ProjectController extends Controller
         $this->authorize('view', $project);
 
         return Inertia::render('projects/show', [
-            'project' => $project->load(['chapters', 'sources']),
+            'project' => $project->load([
+                'chapters' => fn ($q) => $q->with(['comments' => fn ($cq) => $cq->with('user')->latest()]),
+                'sources',
+            ]),
             'cover_url' => $project->getFirstMediaUrl('cover'),
         ]);
     }
@@ -95,5 +99,24 @@ class ProjectController extends Controller
         ]);
 
         return back()->with('success', 'Utilisateur invité avec succès.');
+    }
+
+    /**
+     * Generate an AI cover for the project.
+     */
+    public function generateCover(Project $project, ImageGenerator $generator)
+    {
+        $this->authorize('update', $project);
+
+        try {
+            $imageUrl = $generator->generateCover($project);
+
+            $project->addMediaFromUrl($imageUrl)
+                ->toMediaCollection('cover');
+
+            return back()->with('success', 'Couverture générée avec succès !');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Erreur lors de la génération: '.$e->getMessage());
+        }
     }
 }

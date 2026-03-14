@@ -2,7 +2,6 @@
 
 use App\Models\Project;
 use App\Models\User;
-use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -25,7 +24,7 @@ it('authorizes a collaborator to join the project presence channel', function ()
 
     $response->assertSuccessful();
 
-    $data = json_decode($response->json('channel_data'), true);
+    $data = json_decode((string) $response->json('channel_data'), true);
     expect($data['user_info']['id'])->toBe($user->id);
     expect($data['user_info']['name'])->toBe($user->name);
 });
@@ -43,7 +42,7 @@ it('authorizes the owner to join the project presence channel', function (): voi
 
     $response->assertSuccessful();
 
-    $data = json_decode($response->json('channel_data'), true);
+    $data = json_decode((string) $response->json('channel_data'), true);
     expect($data['user_info']['id'])->toBe($user->id);
     expect($data['user_info']['name'])->toBe($user->name);
 });

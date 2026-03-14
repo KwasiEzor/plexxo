@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ChapterStatus;
 use App\Jobs\GenerateChapterContent;
 use App\Jobs\ReviseChapterContent;
 use App\Jobs\TranslateChapterContent;
@@ -25,8 +26,8 @@ class ChapterController extends Controller
         $chapter->update($request->only('content', 'title'));
 
         // If content was updated, maybe change status
-        if ($request->has('content') && $chapter->status === 'empty') {
-            $chapter->update(['status' => 'draft']);
+        if ($request->has('content') && $chapter->status === ChapterStatus::Empty) {
+            $chapter->update(['status' => ChapterStatus::Draft]);
         }
 
         return back()->with('success', 'Chapitre sauvegardé.');
@@ -39,7 +40,7 @@ class ChapterController extends Controller
     {
         $this->authorize('update', $chapter->project);
 
-        if ($chapter->status === 'generating') {
+        if ($chapter->status === ChapterStatus::Generating) {
             return back()->with('error', 'Génération déjà en cours.');
         }
 
@@ -59,7 +60,7 @@ class ChapterController extends Controller
             return back()->with('error', 'Le chapitre doit avoir du contenu pour être révisé.');
         }
 
-        if ($chapter->status === 'revising') {
+        if ($chapter->status === ChapterStatus::Revising) {
             return back()->with('error', 'Révision déjà en cours.');
         }
 
@@ -83,7 +84,7 @@ class ChapterController extends Controller
             return back()->with('error', 'Le chapitre doit avoir du contenu pour être traduit.');
         }
 
-        if ($chapter->status === 'translating') {
+        if ($chapter->status === ChapterStatus::Translating) {
             return back()->with('error', 'Traduction déjà en cours.');
         }
 

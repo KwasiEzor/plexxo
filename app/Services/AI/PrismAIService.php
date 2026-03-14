@@ -2,19 +2,19 @@
 
 namespace App\Services\AI;
 
-use Exception;
-use EchoLabs\Prism\Prism;
 use EchoLabs\Prism\Enums\Provider;
+use EchoLabs\Prism\Prism;
 
 class PrismAIService implements AIServiceInterface
 {
     protected string $model;
+
     protected Provider $provider;
 
     public function __construct()
     {
         $defaultProvider = config('ai.default', 'openai');
-        
+
         $this->provider = match ($defaultProvider) {
             'anthropic' => Provider::Anthropic,
             default => Provider::OpenAI,
@@ -56,7 +56,7 @@ class PrismAIService implements AIServiceInterface
             ->withPrompt('Le sujet est: '.$topic)
             ->generate();
 
-        $data = json_decode($response->text, true);
+        $data = json_decode((string) $response->text, true);
 
         return $data['outline'] ?? $data;
     }
