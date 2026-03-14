@@ -33,6 +33,9 @@ import { useEcho, useEchoPresence } from '@laravel/echo-react';
 import PresenceAvatars from '@/components/presence-avatars';
 import SourceList from '@/components/source-list';
 import CommentSidebar from '@/components/comment-sidebar';
+import StyleGuideModal from '@/components/style-guide-modal';
+import ProjectStats from '@/components/project-stats';
+import ExportSettingsModal from '@/components/export-settings-modal';
 
 interface ProjectShowProps {
     project: Project;
@@ -153,9 +156,12 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
                             <Book className="mr-2 h-4 w-4" />
                             Plan du livre
                         </h2>
-                        <Button variant="ghost" size="icon" title="Paramètres">
-                            <Settings className="h-4 w-4" />
-                        </Button>
+                        <div className="flex items-center">
+                            <StyleGuideModal project={project} />
+                            <Button variant="ghost" size="icon" title="Paramètres">
+                                <Settings className="h-4 w-4" />
+                            </Button>
+                        </div>
                     </div>
                     
                     <div className="flex-1 overflow-y-auto p-2 space-y-1">
@@ -216,7 +222,12 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
                                         <Badge variant="outline" className="text-[10px] h-5">
                                             {activeChapter.status.toUpperCase()}
                                         </Badge>
-                                        <span className="text-xs text-muted-foreground italic">
+                                        <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+                                            {content.split(/\s+/).filter(Boolean).length} mots
+                                        </span>
+                                        <span className="text-[10px] text-muted-foreground">•</span>
+                                        <span className="text-[10px] text-muted-foreground italic">
+
                                             Dernière modif: {new Date(activeChapter.updated_at).toLocaleTimeString()}
                                         </span>
                                     </div>
@@ -224,6 +235,8 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
                                 <div className="flex items-center space-x-2">
                                     <PresenceAvatars users={onlineUsers} />
                                     
+                                    <ExportSettingsModal project={project} />
+
                                     <Button 
                                         variant="outline" 
                                         size="sm" 
@@ -301,8 +314,11 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
                                 </div>
                             </header>
                             
-                            <div className="flex-1 p-6 overflow-y-auto flex justify-center bg-muted/30">
-                                <div className="w-full max-w-3xl bg-background shadow-sm border rounded-lg p-10 min-h-[1000px]">
+                            <div className="flex-1 p-6 overflow-y-auto flex flex-col items-center bg-muted/30">
+                                <div className="w-full max-w-3xl">
+                                    <ProjectStats project={project} />
+                                    <div className="w-full bg-background shadow-sm border rounded-lg p-10 min-h-[1000px]">
+
                                     <textarea
                                         value={content}
                                         onChange={(e) => setContent(e.target.value)}

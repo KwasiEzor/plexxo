@@ -29,7 +29,10 @@ export interface Project {
     language: string;
     template_id: string | null;
     description: string | null;
+    style_guide?: Record<string, any>;
+    settings?: Record<string, any>;
     chapters_count?: number;
+    total_word_count?: number;
     created_at: string;
     updated_at: string;
     chapters?: Chapter[];

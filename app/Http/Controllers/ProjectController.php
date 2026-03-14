@@ -58,9 +58,28 @@ class ProjectController extends Controller
             'project' => $project->load([
                 'chapters' => fn ($q) => $q->with(['comments' => fn ($cq) => $cq->with('user')->latest()]),
                 'sources',
-            ]),
+            ])->append('total_word_count'),
             'cover_url' => $project->getFirstMediaUrl('cover'),
         ]);
+    }
+
+    /**
+     * Update the project settings.
+     */
+    public function update(Request $request, Project $project)
+    {
+        $this->authorize('update', $project);
+
+        $request->validate([
+            'title' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'style_guide' => 'nullable|array',
+            'settings' => 'nullable|array',
+        ]);
+
+        $project->update($request->only('title', 'description', 'style_guide', 'settings'));
+
+        return back()->with('success', 'Paramètres mis à jour !');
     }
 
     /**

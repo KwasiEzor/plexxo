@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <title>{{ $project->title }}</title>
     <style>
-        body { font-family: 'DejaVu Sans', sans-serif; line-height: 1.6; }
+        body { 
+            font-family: 'DejaVu Sans', sans-serif; 
+            line-height: {{ $project->settings['line_height'] ?? '1.6' }}; 
+            font-size: {{ $project->settings['font_size'] ?? '12pt' }};
+        }
         .page-break { page-break-after: always; }
         .cover { text-align: center; margin-top: 100px; }
         .cover h1 { font-size: 40px; margin-bottom: 20px; }

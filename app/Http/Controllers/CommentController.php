@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Chapter;
 use App\Models\Comment;
+use App\Notifications\CommentAdded;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -20,10 +21,21 @@ class CommentController extends Controller
             'content' => 'required|string|max:1000',
         ]);
 
-        $chapter->comments()->create([
+        $comment = $chapter->comments()->create([
             'user_id' => $request->user()->id,
             'content' => $request->content,
         ]);
+
+        // Notify other collaborators
+        $project = $chapter->project;
+        $usersToNotify = $project->collaborators
+            ->push($project->user)
+            ->unique('id')
+            ->filter(fn ($u): bool => $u->id !== auth()->id());
+
+        foreach ($usersToNotify as $user) {
+            $user->notify(new CommentAdded($comment));
+        }
 
         return back()->with('success', 'Commentaire ajouté.');
     }

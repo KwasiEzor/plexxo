@@ -29,6 +29,7 @@ class TranslatorAgent
      */
     public function translate(Chapter $chapter, string $targetLanguage): string
     {
+        $styleGuide = $chapter->project->style_guide ? json_encode($chapter->project->style_guide) : 'Aucune consigne particulière.';
         $systemPrompt = <<<PROMPT
 Tu es un Traducteur Expert spécialisé dans l'édition d'ebooks. 
 Ton objectif est de traduire le contenu suivant de manière "culturelle" et non littérale. 
@@ -36,8 +37,9 @@ Ton objectif est de traduire le contenu suivant de manière "culturelle" et non 
 RÈGLES:
 1. Adapte le ton, le style et les idiomes à la langue cible: {$targetLanguage}.
 2. Respecte le contexte du projet: {$chapter->project->title} ({$chapter->project->description}).
-3. Assure une lecture fluide et naturelle.
-4. Ne perds aucune information essentielle.
+3. Respecte les CONSIGNES DE STYLE suivantes : {$styleGuide}.
+4. Assure une lecture fluide et naturelle.
+5. Ne perds aucune information essentielle.
 
 Réponds UNIQUEMENT avec le contenu traduit.
 PROMPT;

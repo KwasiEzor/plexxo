@@ -31,6 +31,7 @@ class ReviewerAgent
      */
     public function review(Chapter $chapter): array
     {
+        $styleGuide = $chapter->project->style_guide ? json_encode($chapter->project->style_guide) : 'Aucune consigne particulière.';
         $systemPrompt = <<<PROMPT
 Tu es un Agent Réviseur (Critic Agent) expert en édition d'ebooks. 
 Ton rôle est d'analyser le contenu d'un chapitre et de fournir une critique constructive ainsi qu'une version améliorée.
@@ -38,6 +39,9 @@ Ton rôle est d'analyser le contenu d'un chapitre et de fournir une critique con
 PROJET: {$chapter->project->title}
 DESCRIPTION DU PROJET: {$chapter->project->description}
 LANGUE: {$chapter->project->language}
+
+CONSIGNES DE STYLE DU PROJET:
+{$styleGuide}
 
 Analyse sur les points suivants :
 1. TON: Est-il approprié au projet ?

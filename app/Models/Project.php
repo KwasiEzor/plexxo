@@ -35,6 +35,8 @@ class Project extends Model implements HasMedia
         'language',
         'template_id',
         'description',
+        'style_guide',
+        'settings',
     ];
 
     /**
@@ -47,6 +49,8 @@ class Project extends Model implements HasMedia
     {
         return [
             'status' => ProjectStatus::class,
+            'style_guide' => 'array',
+            'settings' => 'array',
         ];
     }
 
@@ -86,7 +90,15 @@ class Project extends Model implements HasMedia
     }
 
     /**
-     * Get the user that owns the project.
+     * Get the total word count of the project.
+     */
+    public function getTotalWordCountAttribute(): int
+    {
+        return $this->chapters->sum(fn ($chapter): int => str_word_count($chapter->content ?? ''));
+    }
+
+    /**
+     * Get the project that owns the source.
      *
      * @return BelongsTo<User, $this>
      */

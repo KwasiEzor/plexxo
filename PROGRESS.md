@@ -39,5 +39,11 @@ Plateforme d'édition collaborative augmentée par l'IA (Ebook Forge).
 - [x] Landing Page marketing (Conversion).
 - [x] Système de commentaires sur les chapitres.
 
+## 🛠️ Phase 6 : Expérience Auteur & Cohérence IA (Terminée)
+- [x] Guide de style global (Consistance du ton via l'IA).
+- [x] Système de notifications (In-app & Email via Reverb).
+- [x] Statistiques et progression (Compteur de mots, objectifs).
+- [x] Personnalisation des thèmes d'export.
+
 ---
 *Dernière mise à jour : 14 Mars 2026*

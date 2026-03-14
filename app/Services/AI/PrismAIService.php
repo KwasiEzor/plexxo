@@ -25,8 +25,12 @@ class PrismAIService implements AIServiceInterface
 
     public function generate(string $prompt, array $options = []): string
     {
+        $styleInstructions = $options['style_guide'] ?? '';
+        $systemPrompt = 'Tu es un assistant rédactionnel expert.'.($styleInstructions ? "\nCONSIGNES DE STYLE:\n{$styleInstructions}" : '');
+
         $response = Prism::text()
             ->using($this->provider, $options['model'] ?? $this->model)
+            ->withSystemPrompt($systemPrompt)
             ->withPrompt($prompt)
             ->generate();
 
@@ -35,7 +39,10 @@ class PrismAIService implements AIServiceInterface
 
     public function generateWithContext(string $prompt, string $context, array $options = []): string
     {
-        $systemPrompt = "Tu es un assistant rédactionnel expert. Utilise UNIQUEMENT le contexte suivant pour répondre à la demande de l'utilisateur. Si l'information n'est pas dans le contexte, dis-le poliment.\n\nCONTEXTE:\n{$context}";
+        $styleInstructions = $options['style_guide'] ?? '';
+        $systemPrompt = "Tu es un assistant rédactionnel expert. Utilise UNIQUEMENT le contexte suivant pour répondre à la demande de l'utilisateur. Si l'information n'est pas dans le contexte, dis-le poliment.\n\n".
+                        "CONSIGNES DE STYLE:\n{$styleInstructions}\n\n".
+                        "CONTEXTE:\n{$context}";
 
         $response = Prism::text()
             ->using($this->provider, $options['model'] ?? $this->model)

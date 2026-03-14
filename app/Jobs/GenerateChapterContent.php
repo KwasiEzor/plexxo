@@ -6,6 +6,7 @@ use App\Enums\ChapterStatus;
 use App\Enums\SourceStatus;
 use App\Events\ChapterUpdated;
 use App\Models\Chapter;
+use App\Notifications\ChapterGenerated;
 use App\Services\AI\AIOrchestrator;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -53,10 +54,12 @@ class GenerateChapterContent implements ShouldQueue
             if ($context) {
                 $content = $ai->generateWithContext($prompt, $context, [
                     'max_tokens' => 4000,
+                    'style_guide' => json_encode($this->chapter->project->style_guide),
                 ]);
             } else {
                 $content = $ai->generate($prompt, [
                     'max_tokens' => 4000,
+                    'style_guide' => json_encode($this->chapter->project->style_guide),
                 ]);
             }
 
@@ -64,6 +67,16 @@ class GenerateChapterContent implements ShouldQueue
                 'content' => $content,
                 'status' => ChapterStatus::Draft,
             ]);
+
+            // Notify collaborators
+            $project = $this->chapter->project;
+            $usersToNotify = $project->collaborators
+                ->push($project->user)
+                ->unique('id');
+
+            foreach ($usersToNotify as $user) {
+                $user->notify(new ChapterGenerated($this->chapter));
+            }
 
             event(new ChapterUpdated($this->chapter));
         } catch (\Exception $e) {
