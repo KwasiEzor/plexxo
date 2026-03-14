@@ -21,11 +21,11 @@ Plateforme d'édition collaborative augmentée par l'IA (Ebook Forge).
 - [x] Système d'invitation de membres (TDD validé).
 - [x] Gestion des rôles (Admin, Éditeur, Lecteur) via ProjectPolicy.
 - [x] Permissions granulaires sur les projets (TDD validé).
-- [ ] Indicateurs de présence en temps réel (Presence Channels).
+- [x] Indicateurs de présence en temps réel (Presence Channels).
 
-## 🧠 Phase 3 : IA Avancée (À venir)
-- [ ] RAG (Retrieval-Augmented Generation) avec sources PDF/Docx.
-- [ ] Agent Réviseur (Critic Agent) pour le style et le ton.
+## 🧠 Phase 3 : IA Avancée (En cours)
+- [x] RAG (Retrieval-Augmented Generation) avec sources PDF/Docx.
+- [x] Agent Réviseur (Critic Agent) pour le style et le ton.
 - [ ] Traduction culturelle et multilingue natif.
 
 ## 🏁 Phase 4 : Publication & Monétisation (À venir)

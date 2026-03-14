@@ -12,6 +12,13 @@ interface AIServiceInterface
     public function generate(string $prompt, array $options = []): string;
 
     /**
+     * Generate content based on a prompt and provided context.
+     *
+     * @param  array<string, mixed>  $options
+     */
+    public function generateWithContext(string $prompt, string $context, array $options = []): string;
+
+    /**
      * Generate a structured outline for an ebook.
      *
      * @param  array<string, mixed>  $options

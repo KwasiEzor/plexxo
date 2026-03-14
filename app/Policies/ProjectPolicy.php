@@ -20,7 +20,7 @@ class ProjectPolicy
      */
     public function view(User $user, Project $project): bool
     {
-        return $user->id === $project->user_id || 
+        return $user->id === $project->user_id ||
                $project->collaborators()->where('user_id', $user->id)->exists();
     }
 

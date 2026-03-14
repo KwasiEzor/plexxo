@@ -2,16 +2,16 @@
 
 use App\Models\Project;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->withoutMiddleware(ValidateCsrfToken::class);
 });
 
-it('allows a project owner to invite another user', function () {
+it('allows a project owner to invite another user', function (): void {
     $owner = User::factory()->create();
     $invited = User::factory()->create();
     $project = Project::factory()->create(['user_id' => $owner->id]);
@@ -31,7 +31,7 @@ it('allows a project owner to invite another user', function () {
     ]);
 });
 
-it('prevents non-owners from inviting users', function () {
+it('prevents non-owners from inviting users', function (): void {
     $owner = User::factory()->create();
     $stranger = User::factory()->create();
     $invited = User::factory()->create();
@@ -47,7 +47,7 @@ it('prevents non-owners from inviting users', function () {
     $response->assertForbidden();
 });
 
-it('allows an editor to update a project', function () {
+it('allows an editor to update a project', function (): void {
     $owner = User::factory()->create();
     $editor = User::factory()->create();
     $project = Project::factory()->create(['user_id' => $owner->id]);
@@ -62,7 +62,7 @@ it('allows an editor to update a project', function () {
     $response->assertRedirect();
 });
 
-it('prevents a viewer from updating a project', function () {
+it('prevents a viewer from updating a project', function (): void {
     $owner = User::factory()->create();
     $viewer = User::factory()->create();
     $project = Project::factory()->create(['user_id' => $owner->id]);

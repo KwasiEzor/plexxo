@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -44,6 +45,7 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    #[\Override]
     protected function casts(): array
     {
         return [
@@ -56,7 +58,7 @@ class User extends Authenticatable
     /**
      * Get the projects for the user.
      *
-     * @return HasMany<Project>
+     * @return HasMany<Project, $this>
      */
     public function projects(): HasMany
     {
@@ -66,9 +68,9 @@ class User extends Authenticatable
     /**
      * Get the projects the user is collaborating on.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<Project>
+     * @return BelongsToMany<Project, $this>
      */
-    public function collaborations(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function collaborations(): BelongsToMany
     {
         return $this->belongsToMany(Project::class)->withPivot('role')->withTimestamps();
     }

@@ -17,19 +17,17 @@ class ChapterUpdated implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct(public Chapter $chapter)
-    {
-    }
+    public function __construct(public Chapter $chapter) {}
 
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
+     * @return array<int, Channel>
      */
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('project.' . $this->chapter->project_id),
+            new PrivateChannel('project.'.$this->chapter->project_id),
         ];
     }
 }

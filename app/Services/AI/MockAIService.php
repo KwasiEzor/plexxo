@@ -9,6 +9,11 @@ class MockAIService implements AIServiceInterface
         return "Ceci est un contenu généré par l'IA simulée pour le prompt : ".$prompt;
     }
 
+    public function generateWithContext(string $prompt, string $context, array $options = []): string
+    {
+        return "Ceci est un contenu généré par l'IA simulée avec contexte : ".$prompt." (Context length: ".strlen($context).")";
+    }
+
     public function generateOutline(string $topic, array $options = []): array
     {
         return [

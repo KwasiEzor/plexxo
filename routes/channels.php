@@ -1,15 +1,22 @@
 <?php
 
+use App\Models\Project;
+use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
-});
+Broadcast::channel('project.{id}', function (User $user, $id) {
+    $project = Project::find($id);
 
-Broadcast::channel('user.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
-});
+    if (! $project) {
+        return false;
+    }
 
-Broadcast::channel('project.{id}', function ($user, $id) {
-    return $user->projects()->where('id', $id)->exists();
+    if ($user->id === $project->user_id || $project->collaborators()->where('user_id', $user->id)->exists()) {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+        ];
+    }
+
+    return false;
 });

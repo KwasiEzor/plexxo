@@ -10,6 +10,8 @@ export interface Project {
     chapters_count?: number;
     created_at: string;
     updated_at: string;
+    chapters?: Chapter[];
+    sources?: Source[];
 }
 
 export interface Chapter {
@@ -19,6 +21,17 @@ export interface Chapter {
     order: number;
     content: string | null;
     status: 'empty' | 'draft' | 'generating' | 'revised' | 'final';
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Source {
+    id: number;
+    project_id: number;
+    title: string;
+    type: string;
+    content: string | null;
+    status: 'pending' | 'processing' | 'completed' | 'failed';
     created_at: string;
     updated_at: string;
 }

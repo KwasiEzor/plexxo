@@ -12,11 +12,14 @@
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.1",
         "inertiajs/inertia-laravel": "^2.0",
+        "laravel/ai": "^0.3.0",
         "laravel/fortify": "^1.30",
         "laravel/framework": "^12.0",
         "laravel/reverb": "^1.0",
         "laravel/tinker": "^2.10.1",
         "laravel/wayfinder": "^0.1.9",
+        "phpoffice/phpword": "^1.4",
+        "smalot/pdfparser": "^2.12",
         "spatie/laravel-activitylog": "^4.12",
         "spatie/laravel-backup": "^10.0",
         "spatie/laravel-medialibrary": "^11.21",
@@ -27,6 +30,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^3.9",
         "laravel/boost": "^2.0",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
@@ -34,7 +38,8 @@
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^4.4",
-        "pestphp/pest-plugin-laravel": "^4.1"
+        "pestphp/pest-plugin-laravel": "^4.1",
+        "rector/rector": "^2.3"
     },
     "autoload": {
         "psr-4": {
@@ -67,10 +72,26 @@
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"php artisan inertia:start-ssr\" --names=server,queue,logs,ssr --kill-others"
         ],
         "lint": [
-            "pint --parallel"
+            "pint --parallel",
+            "rector",
+            "phpstan analyze --memory-limit=2G"
         ],
         "lint:check": [
-            "pint --parallel --test"
+            "pint --parallel --test",
+            "rector --dry-run",
+            "phpstan analyze --memory-limit=2G"
+        ],
+        "lint:pint": [
+            "pint --parallel"
+        ],
+        "lint:rector": [
+            "rector"
+        ],
+        "lint:rector-dry": [
+            "rector --dry-run"
+        ],
+        "lint:phpstan": [
+            "phpstan analyze --memory-limit=2G"
         ],
         "ci:check": [
             "Composer\\Config::disableProcessTimeout",

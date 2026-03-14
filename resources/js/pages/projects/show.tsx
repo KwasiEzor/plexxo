@@ -14,19 +14,26 @@ import {
     Download,
     FileText, 
     Image as ImageIcon, 
+    Languages,
     Loader2, 
     Save, 
     Settings, 
-    Sparkles 
+    Sparkles,
+    UserCheck
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { useEcho } from '@laravel/echo-react';
+import { useEcho, useEchoPresence } from '@laravel/echo-react';
+import PresenceAvatars from '@/components/presence-avatars';
+import SourceList from '@/components/source-list';
 
 interface ProjectShowProps {
-    project: Project & {
-        chapters: Chapter[];
-    };
+    project: Project;
     cover_url?: string;
+}
+
+interface PresenceUser {
+    id: number;
+    name: string;
 }
 
 export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
@@ -40,32 +47,28 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
     );
     const [content, setContent] = useState(activeChapter?.content || '');
     const [isSaving, setIsSaving] = useState(false);
-    const echo = useEcho();
+    const [onlineUsers, setOnlineUsers] = useState<PresenceUser[]>([]);
+    
+    // Listen for real-time presence
+    const { channel: presenceChannel } = useEchoPresence(`project.${project.id}`);
 
-    // Re-sync content when active chapter changes
     useEffect(() => {
-        setContent(activeChapter?.content || '');
-    }, [activeChapter]);
+        const channel = presenceChannel();
+        
+        channel.here((users: PresenceUser[]) => setOnlineUsers(users));
+        channel.joining((user: PresenceUser) => setOnlineUsers((prev) => [...prev, user]));
+        channel.leaving((user: PresenceUser) => setOnlineUsers((prev) => prev.filter((u) => u.id !== user.id)));
+    }, [presenceChannel]);
 
     // Listen for real-time updates (collaboration / AI generation)
-    useEffect(() => {
-        if (!echo) return;
-
-        const channel = echo.private(`project.${project.id}`);
-        
-        channel.listen('ChapterUpdated', (e: { chapter: Chapter }) => {
-            if (activeChapter?.id === e.chapter.id) {
-                if (!isSaving) {
-                    setContent(e.chapter.content || '');
-                }
+    useEcho(`project.${project.id}`, 'ChapterUpdated', (e: { chapter: Chapter }) => {
+        if (activeChapter?.id === e.chapter.id) {
+            if (!isSaving) {
+                setContent(e.chapter.content || '');
             }
-            router.reload({ only: ['project'] });
-        });
-
-        return () => {
-            channel.stopListening('ChapterUpdated');
-        };
-    }, [echo, project.id, activeChapter?.id, isSaving]);
+        }
+        router.reload({ only: ['project'] });
+    });
 
     const handleSave = () => {
         if (!activeChapter) return;
@@ -82,11 +85,19 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
     const handleGenerate = () => {
         if (!activeChapter) return;
         
-        router.post(chaptersGenerate({ chapter: activeChapter.id }), {}, {
+        router.post(route('chapters.generate', { chapter: activeChapter.id }), {}, {
             preserveScroll: true,
             onSuccess: () => {
                 // The actual content will come via Echo
             }
+        });
+    };
+
+    const handleRevise = () => {
+        if (!activeChapter) return;
+        
+        router.post(route('chapters.revise', { chapter: activeChapter.id }), {}, {
+            preserveScroll: true
         });
     };
 
@@ -95,6 +106,8 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
     };
 
     const isGenerating = activeChapter?.status === 'generating';
+
+    const chapters = project.chapters || [];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -114,7 +127,7 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
                     </div>
                     
                     <div className="flex-1 overflow-y-auto p-2 space-y-1">
-                        {project.chapters.map((chapter) => (
+                        {chapters.map((chapter) => (
                             <button
                                 key={chapter.id}
                                 onClick={() => setActiveChapter(chapter)}
@@ -134,23 +147,27 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
                         ))}
                     </div>
 
-                    <div className="p-4 border-t bg-background/50 space-y-4">
-                        <CoverManager project={project} coverUrl={cover_url} />
+                    <div className="p-4 border-t bg-background/50 space-y-6">
+                        <SourceList project={project} />
                         
-                        <div className="space-y-2">
-                            <Button 
-                                className="w-full justify-start" 
-                                variant="outline" 
-                                onClick={handleGenerate}
-                                disabled={!activeChapter || isGenerating}
-                            >
-                                {isGenerating ? (
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                ) : (
-                                    <Sparkles className="mr-2 h-4 w-4 text-purple-500" />
-                                )}
-                                {isGenerating ? 'IA en cours...' : "Rédiger ce chapitre"}
-                            </Button>
+                        <div className="space-y-4">
+                            <CoverManager project={project} coverUrl={cover_url} />
+                            
+                            <div className="space-y-2">
+                                <Button 
+                                    className="w-full justify-start" 
+                                    variant="outline" 
+                                    onClick={handleGenerate}
+                                    disabled={!activeChapter || isGenerating}
+                                >
+                                    {isGenerating ? (
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Sparkles className="mr-2 h-4 w-4 text-purple-500" />
+                                    )}
+                                    {isGenerating ? 'IA en cours...' : "Rédiger ce chapitre"}
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </aside>
@@ -172,6 +189,23 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-2">
+                                    <PresenceAvatars users={onlineUsers} />
+                                    
+                                    <Button 
+                                        variant="outline" 
+                                        size="sm" 
+                                        onClick={handleRevise} 
+                                        disabled={!content || activeChapter.status === 'revising'}
+                                        title="Lancer l'Agent Réviseur pour améliorer le style et corriger les fautes"
+                                    >
+                                        {activeChapter.status === 'revising' ? (
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        ) : (
+                                            <UserCheck className="mr-2 h-4 w-4 text-blue-500" />
+                                        )}
+                                        {activeChapter.status === 'revising' ? 'Révision...' : 'Réviser (IA)'}
+                                    </Button>
+
                                     <Button variant="outline" size="sm" onClick={handleSave} disabled={isSaving}>
                                         {isSaving ? (
                                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

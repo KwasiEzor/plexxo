@@ -53,7 +53,7 @@ class ProjectController extends Controller
         $this->authorize('view', $project);
 
         return Inertia::render('projects/show', [
-            'project' => $project->load('chapters'),
+            'project' => $project->load(['chapters', 'sources']),
             'cover_url' => $project->getFirstMediaUrl('cover'),
         ]);
     }

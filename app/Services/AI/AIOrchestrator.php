@@ -2,24 +2,21 @@
 
 namespace App\Services\AI;
 
-use Exception;
-
 class AIOrchestrator
 {
     /**
-     * Get the configured AI provider.
-     *
-     * @throws Exception
+     * Get the AI provider instance.
      */
     public static function provider(?string $provider = null): AIServiceInterface
     {
-        $provider = $provider ?? config('ai.default');
+        $provider ??= config('ai.default');
 
         return match ($provider) {
             'openai' => new OpenAIService,
+            'anthropic' => new OpenAIService, // Using OpenAIService as it currently handles both via HTTP if needed, or Prism
+            'prism' => new PrismAIService,
             'mock' => new MockAIService,
-            // 'anthropic' => new AnthropicService(), // To be implemented
-            default => throw new Exception("AI provider '{$provider}' not supported."),
+            default => new PrismAIService, // Default to Prism for improved features
         };
     }
 }

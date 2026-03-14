@@ -2,12 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\Project;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Project>
+ * @extends Factory<Project>
  */
 class ProjectFactory extends Factory
 {
@@ -19,6 +20,7 @@ class ProjectFactory extends Factory
     public function definition(): array
     {
         $title = $this->faker->sentence(3);
+
         return [
             'user_id' => User::factory(),
             'title' => $title,

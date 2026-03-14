@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\GenerateChapterContent;
+use App\Jobs\ReviseChapterContent;
 use App\Models\Chapter;
 use Illuminate\Http\Request;
 
@@ -44,5 +45,25 @@ class ChapterController extends Controller
         GenerateChapterContent::dispatch($chapter);
 
         return back()->with('success', "L'IA commence à rédiger le chapitre...");
+    }
+
+    /**
+     * Trigger AI revision for the chapter content.
+     */
+    public function revise(Chapter $chapter)
+    {
+        $this->authorize('update', $chapter->project);
+
+        if (empty($chapter->content)) {
+            return back()->with('error', 'Le chapitre doit avoir du contenu pour être révisé.');
+        }
+
+        if ($chapter->status === 'revising') {
+            return back()->with('error', 'Révision déjà en cours.');
+        }
+
+        ReviseChapterContent::dispatch($chapter);
+
+        return back()->with('success', "L'Agent Réviseur commence son analyse...");
     }
 }

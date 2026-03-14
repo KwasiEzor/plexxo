@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -15,7 +16,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Project extends Model implements HasMedia
 {
-    use HasSlug, InteractsWithMedia, LogsActivity, HasFactory;
+    use HasFactory, HasSlug, InteractsWithMedia, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -62,12 +63,15 @@ class Project extends Model implements HasMedia
 
         $this->addMediaCollection('exports')
             ->useDisk('local');
+
+        $this->addMediaCollection('sources')
+            ->useDisk('local');
     }
 
     /**
      * Get the user that owns the project.
      *
-     * @return BelongsTo<User, Project>
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -77,7 +81,7 @@ class Project extends Model implements HasMedia
     /**
      * Get the chapters for the project.
      *
-     * @return HasMany<Chapter>
+     * @return HasMany<Chapter, $this>
      */
     public function chapters(): HasMany
     {
@@ -85,11 +89,21 @@ class Project extends Model implements HasMedia
     }
 
     /**
+     * Get the sources for the project.
+     *
+     * @return HasMany<Source, $this>
+     */
+    public function sources(): HasMany
+    {
+        return $this->hasMany(Source::class);
+    }
+
+    /**
      * Get the collaborators for the project.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<User>
+     * @return BelongsToMany<User, $this>
      */
-    public function collaborators(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function collaborators(): BelongsToMany
     {
         return $this->belongsToMany(User::class)->withPivot('role')->withTimestamps();
     }
