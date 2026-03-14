@@ -11,7 +11,9 @@ interface PresenceAvatarsProps {
 }
 
 export default function PresenceAvatars({ users }: PresenceAvatarsProps) {
-    if (users.length === 0) return null;
+    if (users.length === 0) {
+return null;
+}
 
     return (
         <div className="flex -space-x-2 overflow-hidden items-center mr-4">

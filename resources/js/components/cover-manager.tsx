@@ -1,9 +1,9 @@
-import { Project } from '@/types';
-import { Button } from '@/components/ui/button';
 import { useForm, router } from '@inertiajs/react';
-import { updateCover as projectsUpdateCover } from '@/actions/App/Http/Controllers/ProjectController';
 import { Image as ImageIcon, Loader2, Upload, Sparkles } from 'lucide-react';
 import { useRef } from 'react';
+import { updateCover as projectsUpdateCover } from '@/actions/App/Http/Controllers/ProjectController';
+import { Button } from '@/components/ui/button';
+import type { Project } from '@/types';
 
 interface CoverManagerProps {
     project: Project;

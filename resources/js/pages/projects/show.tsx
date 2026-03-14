@@ -1,26 +1,10 @@
-import { Head, usePage, router, Link } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
-import { show as projectsShow } from '@/actions/App/Http/Controllers/ProjectController';
-import { update as chaptersUpdate, generate as chaptersGenerate } from '@/actions/App/Http/Controllers/ChapterController';
-import { pdf as projectsExportPdf } from '@/actions/App/Http/Controllers/ProjectExportController';
-import type { BreadcrumbItem, Project, Chapter } from '@/types';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import CoverManager from '@/components/cover-manager';
-import { 
-    DropdownMenu, 
-    DropdownMenuContent, 
-    DropdownMenuItem, 
-    DropdownMenuTrigger 
-} from '@/components/ui/dropdown-menu';
+import { Head, router } from '@inertiajs/react';
+import { useEcho, useEchoPresence } from '@laravel/echo-react';
 import { 
     Book, 
-    ChevronLeft, 
     Download,
     ExternalLink,
     FileText, 
-    Image as ImageIcon, 
     Languages,
     Loader2, 
     Save, 
@@ -29,13 +13,26 @@ import {
     UserCheck
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { useEcho, useEchoPresence } from '@laravel/echo-react';
-import PresenceAvatars from '@/components/presence-avatars';
-import SourceList from '@/components/source-list';
+import { update as chaptersUpdate } from '@/actions/App/Http/Controllers/ChapterController';
+import { show as projectsShow } from '@/actions/App/Http/Controllers/ProjectController';
+import { pdf as projectsExportPdf } from '@/actions/App/Http/Controllers/ProjectExportController';
 import CommentSidebar from '@/components/comment-sidebar';
-import StyleGuideModal from '@/components/style-guide-modal';
-import ProjectStats from '@/components/project-stats';
+import CoverManager from '@/components/cover-manager';
 import ExportSettingsModal from '@/components/export-settings-modal';
+import PresenceAvatars from '@/components/presence-avatars';
+import ProjectStats from '@/components/project-stats';
+import SourceList from '@/components/source-list';
+import StyleGuideModal from '@/components/style-guide-modal';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { 
+    DropdownMenu, 
+    DropdownMenuContent, 
+    DropdownMenuItem, 
+    DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
+import AppLayout from '@/layouts/app-layout';
+import type { BreadcrumbItem, Project, Chapter } from '@/types';
 
 interface ProjectShowProps {
     project: Project;
@@ -78,11 +75,15 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
                 setContent(e.chapter.content || '');
             }
         }
+
         router.reload({ only: ['project'] });
     });
 
     const handleSave = () => {
-        if (!activeChapter) return;
+        if (!activeChapter) {
+return;
+}
+
         setIsSaving(true);
         
         router.put(chaptersUpdate({ chapter: activeChapter.id }), {
@@ -94,7 +95,9 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
     };
 
     const handleGenerate = () => {
-        if (!activeChapter) return;
+        if (!activeChapter) {
+return;
+}
         
         router.post(route('chapters.generate', { chapter: activeChapter.id }), {}, {
             preserveScroll: true,
@@ -105,7 +108,9 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
     };
 
     const handleRevise = () => {
-        if (!activeChapter) return;
+        if (!activeChapter) {
+return;
+}
         
         router.post(route('chapters.revise', { chapter: activeChapter.id }), {}, {
             preserveScroll: true
@@ -113,7 +118,9 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
     };
 
     const handleTranslate = (language: string) => {
-        if (!activeChapter) return;
+        if (!activeChapter) {
+return;
+}
         
         router.post(route('chapters.translate', { chapter: activeChapter.id }), {
             language: language
@@ -318,14 +325,15 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
                                 <div className="w-full max-w-3xl">
                                     <ProjectStats project={project} />
                                     <div className="w-full bg-background shadow-sm border rounded-lg p-10 min-h-[1000px]">
-
-                                    <textarea
-                                        value={content}
-                                        onChange={(e) => setContent(e.target.value)}
-                                        placeholder="Commencez à écrire ici ou laissez l'IA vous aider..."
-                                        className="w-full h-full min-h-[800px] resize-none border-none focus:ring-0 text-lg leading-relaxed font-serif outline-none"
-                                    />
+                                        <textarea
+                                            value={content}
+                                            onChange={(e) => setContent(e.target.value)}
+                                            placeholder="Commencez à écrire ici ou laissez l'IA vous aider..."
+                                            className="w-full h-full min-h-[800px] resize-none border-none focus:ring-0 text-lg leading-relaxed font-serif outline-none"
+                                        />
+                                    </div>
                                 </div>
+                            </div>
                             </div>
                             <CommentSidebar chapter={activeChapter} />
                         </div>

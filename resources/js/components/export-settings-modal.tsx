@@ -1,5 +1,6 @@
-import { useState } from 'react';
 import { useForm } from '@inertiajs/react';
+import { Palette } from 'lucide-react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -12,8 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Palette, Download } from 'lucide-react';
-import { Project } from '@/types/project';
+import type { Project } from '@/types/project';
 
 interface ExportSettingsModalProps {
     project: Project;

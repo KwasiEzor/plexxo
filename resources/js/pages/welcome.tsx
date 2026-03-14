@@ -1,6 +1,4 @@
 import { Head, Link } from '@inertiajs/react';
-import AppLogo from '@/components/app-logo';
-import { Button } from '@/components/ui/button';
 import { 
     BookOpen, 
     CheckCircle2, 
@@ -14,6 +12,8 @@ import {
     ChevronRight,
     ArrowRight
 } from 'lucide-react';
+import AppLogo from '@/components/app-logo';
+import { Button } from '@/components/ui/button';
 
 export default function Welcome() {
     return (

@@ -1,5 +1,6 @@
-import { useState } from 'react';
 import { useForm } from '@inertiajs/react';
+import { Sparkles } from 'lucide-react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -11,9 +12,8 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import type { Project } from '@/types/project';
 import { Textarea } from '@/components/ui/textarea';
-import { Settings2, Sparkles } from 'lucide-react';
-import { Project } from '@/types/project';
 
 interface StyleGuideModalProps {
     project: Project;

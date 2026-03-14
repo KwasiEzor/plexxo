@@ -17,7 +17,7 @@ Plateforme d'édition collaborative augmentée par l'IA (Ebook Forge).
 - [x] Slugs automatiques (Spatie Sluggable).
 - [x] Journal d'activité (Spatie ActivityLog).
 
-## 🤝 Phase 2 : Collaboration & Équipes (En cours)
+## 🤝 Phase 2 : Collaboration & Équipes (Terminée)
 - [x] Système d'invitation de membres (TDD validé).
 - [x] Gestion des rôles (Admin, Éditeur, Lecteur) via ProjectPolicy.
 - [x] Permissions granulaires sur les projets (TDD validé).
@@ -44,6 +44,12 @@ Plateforme d'édition collaborative augmentée par l'IA (Ebook Forge).
 - [x] Système de notifications (In-app & Email via Reverb).
 - [x] Statistiques et progression (Compteur de mots, objectifs).
 - [x] Personnalisation des thèmes d'export.
+
+## 🚀 Phase 7 : Scalabilité & Écosystème (À venir)
+- [ ] Application mobile native (React Native / Expo).
+- [ ] API publique pour développeurs (Webhooks, SDK).
+- [ ] Analytics avancés (Temps passé par chapitre, heatmap d'édition).
+- [ ] Marketplace de templates de mise en page.
 
 ---
 *Dernière mise à jour : 14 Mars 2026*

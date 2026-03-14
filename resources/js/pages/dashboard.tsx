@@ -1,11 +1,11 @@
 import { Head, usePage, router } from '@inertiajs/react';
+import { useEcho } from '@laravel/echo-react';
+import { useEffect } from 'react';
+import CreateProject from '@/components/create-project';
+import ProjectCard from '@/components/project-card';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem, Project } from '@/types';
-import CreateProject from '@/components/create-project';
-import ProjectCard from '@/components/project-card';
-import { useEcho } from '@laravel/echo-react';
-import { useEffect } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -26,11 +26,13 @@ export default function Dashboard({ projects }: DashboardProps) {
     const echo = useEcho();
 
     useEffect(() => {
-        if (!echo || !auth.user) return;
+        if (!echo || !auth.user) {
+return;
+}
 
         const channel = echo.private(`user.${auth.user.id}`);
         
-        channel.listen('ProjectOutlineGenerated', (e: { project: Project }) => {
+        channel.listen('ProjectOutlineGenerated', () => {
             // Reload the page data when a project is generated
             router.reload({ only: ['projects'] });
         });
@@ -38,7 +40,7 @@ export default function Dashboard({ projects }: DashboardProps) {
         return () => {
             channel.stopListening('ProjectOutlineGenerated');
         };
-    }, [echo, auth.user.id]);
+    }, [echo, auth.user]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

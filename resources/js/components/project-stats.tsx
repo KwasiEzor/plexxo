@@ -1,6 +1,6 @@
-import { Project } from '@/types/project';
-import { Card, CardContent } from '@/components/ui/card';
 import { BookOpen, FileText, Clock, BarChart3 } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import type { Project } from '@/types/project';
 
 interface ProjectStatsProps {
     project: Project;

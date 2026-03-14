@@ -1,20 +1,18 @@
-import { useState } from 'react';
-import { useForm, usePage } from '@inertiajs/react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { MessageSquare, Send, CheckCircle2, Trash2, XCircle } from 'lucide-react';
-import { Chapter, Comment } from '@/types/project';
+import { useForm } from '@inertiajs/react';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { MessageSquare, Send, CheckCircle2, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import type { Chapter } from '@/types/project';
+import { Textarea } from '@/components/ui/textarea';
 
 interface CommentSidebarProps {
     chapter: Chapter;
 }
 
 export default function CommentSidebar({ chapter }: CommentSidebarProps) {
-    const { auth } = usePage().props as any;
     const [isAdding, setIsAdding] = useState(false);
     
     const { data, setData, post, processing, reset } = useForm({

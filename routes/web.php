@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProjectController;
@@ -11,6 +12,9 @@ use Laravel\Fortify\Features;
 Route::inertia('/', 'welcome', [
     'canRegister' => Features::enabled(Features::registration()),
 ])->name('home');
+
+Route::get('auth/{provider}/redirect', [SocialLoginController::class, 'redirect'])->name('social.redirect');
+Route::get('auth/{provider}/callback', [SocialLoginController::class, 'callback'])->name('social.callback');
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('dashboard', [ProjectController::class, 'index'])->name('dashboard');

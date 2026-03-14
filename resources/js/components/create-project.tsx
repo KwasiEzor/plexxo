@@ -1,4 +1,7 @@
 import { useForm } from '@inertiajs/react';
+import { Loader2, Plus } from 'lucide-react';
+import { useState } from 'react';
+import { store as projectsStore } from '@/actions/App/Http/Controllers/ProjectController';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -12,9 +15,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { store as projectsStore } from '@/actions/App/Http/Controllers/ProjectController';
-import { useState } from 'react';
-import { Loader2, Plus } from 'lucide-react';
 
 export default function CreateProject() {
     const [open, setOpen] = useState(false);

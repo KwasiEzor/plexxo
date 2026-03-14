@@ -1,10 +1,10 @@
-import { Project } from '@/types';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Link } from '@inertiajs/react';
+import { Book, ChevronRight, Loader2 } from 'lucide-react';
+import { show as projectsShow } from '@/actions/App/Http/Controllers/ProjectController';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Link } from '@inertiajs/react';
-import { show as projectsShow } from '@/actions/App/Http/Controllers/ProjectController';
-import { Book, ChevronRight, Loader2 } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import type { Project } from '@/types';
 
 interface ProjectCardProps {
     project: Project;

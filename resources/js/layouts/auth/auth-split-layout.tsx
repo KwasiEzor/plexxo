@@ -1,8 +1,8 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
+import { Sparkles, CheckCircle2 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { home } from '@/routes';
 import type { AuthLayoutProps } from '@/types';
-import { Sparkles, CheckCircle2 } from 'lucide-react';
 
 export default function AuthSplitLayout({
     children,

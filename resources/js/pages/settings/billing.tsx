@@ -1,11 +1,11 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
+import { CreditCard, Check } from 'lucide-react';
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import type { BreadcrumbItem } from '@/types';
-import { CreditCard, Check } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -15,14 +15,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Billing({
-    intent,
     subscription,
 }: {
-    intent: { client_secret: string };
+    intent?: { client_secret: string };
     subscription: any;
 }) {
-    const { auth } = usePage().props;
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Billing settings" />
