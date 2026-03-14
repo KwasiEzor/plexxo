@@ -9,6 +9,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import CoverManager from '@/components/cover-manager';
 import { 
+    DropdownMenu, 
+    DropdownMenuContent, 
+    DropdownMenuItem, 
+    DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
+import { 
     Book, 
     ChevronLeft, 
     Download,
@@ -97,6 +103,16 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
         if (!activeChapter) return;
         
         router.post(route('chapters.revise', { chapter: activeChapter.id }), {}, {
+            preserveScroll: true
+        });
+    };
+
+    const handleTranslate = (language: string) => {
+        if (!activeChapter) return;
+        
+        router.post(route('chapters.translate', { chapter: activeChapter.id }), {
+            language: language
+        }, {
             preserveScroll: true
         });
     };
@@ -205,6 +221,38 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
                                         )}
                                         {activeChapter.status === 'revising' ? 'Révision...' : 'Réviser (IA)'}
                                     </Button>
+
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button 
+                                                variant="outline" 
+                                                size="sm" 
+                                                disabled={!content || activeChapter.status === 'translating'}
+                                                title="Traduire le contenu dans une autre langue"
+                                            >
+                                                {activeChapter.status === 'translating' ? (
+                                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                ) : (
+                                                    <Languages className="mr-2 h-4 w-4 text-green-500" />
+                                                )}
+                                                {activeChapter.status === 'translating' ? 'Traduction...' : 'Traduire'}
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem onClick={() => handleTranslate('Anglais')}>
+                                                Anglais
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => handleTranslate('Espagnol')}>
+                                                Espagnol
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => handleTranslate('Allemand')}>
+                                                Allemand
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => handleTranslate('Italien')}>
+                                                Italien
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
 
                                     <Button variant="outline" size="sm" onClick={handleSave} disabled={isSaving}>
                                         {isSaving ? (

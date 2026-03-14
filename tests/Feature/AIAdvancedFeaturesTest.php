@@ -2,13 +2,13 @@
 
 use App\Jobs\ProcessSourceDocument;
 use App\Jobs\ReviseChapterContent;
+use App\Jobs\TranslateChapterContent;
 use App\Models\Chapter;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -54,6 +54,26 @@ it('allows a project owner to trigger a chapter revision', function (): void {
         ->assertRedirect();
 
     Bus::assertDispatched(ReviseChapterContent::class);
+});
+
+it('allows a project owner to trigger a chapter translation', function (): void {
+    $user = User::factory()->create();
+    $project = Project::factory()->create(['user_id' => $user->id]);
+    $chapter = Chapter::factory()->create([
+        'project_id' => $project->id,
+        'content' => 'This content will be translated.',
+        'status' => 'draft',
+    ]);
+
+    $this->actingAs($user)
+        ->post(route('chapters.translate', ['chapter' => $chapter->id]), [
+            'language' => 'English',
+        ])
+        ->assertRedirect();
+
+    Bus::assertDispatched(TranslateChapterContent::class, function ($job) use ($chapter) {
+        return $job->chapter->id === $chapter->id && $job->targetLanguage === 'English';
+    });
 });
 
 it('denies a non-collaborator from uploading sources', function (): void {

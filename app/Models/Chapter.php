@@ -21,7 +21,7 @@ class Chapter extends Model
         'title',
         'order',
         'content',
-        'status', // empty, draft, generating, revising, revised, finalized, failed
+        'status', // empty, draft, generating, revising, revised, translating, translated, finalized, failed
     ];
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\GenerateChapterContent;
 use App\Jobs\ReviseChapterContent;
+use App\Jobs\TranslateChapterContent;
 use App\Models\Chapter;
 use Illuminate\Http\Request;
 
@@ -65,5 +66,29 @@ class ChapterController extends Controller
         ReviseChapterContent::dispatch($chapter);
 
         return back()->with('success', "L'Agent Réviseur commence son analyse...");
+    }
+
+    /**
+     * Trigger AI translation for the chapter content.
+     */
+    public function translate(Request $request, Chapter $chapter)
+    {
+        $this->authorize('update', $chapter->project);
+
+        $request->validate([
+            'language' => 'required|string',
+        ]);
+
+        if (empty($chapter->content)) {
+            return back()->with('error', 'Le chapitre doit avoir du contenu pour être traduit.');
+        }
+
+        if ($chapter->status === 'translating') {
+            return back()->with('error', 'Traduction déjà en cours.');
+        }
+
+        TranslateChapterContent::dispatch($chapter, $request->language);
+
+        return back()->with('success', "L'Agent Traducteur commence son travail...");
     }
 }

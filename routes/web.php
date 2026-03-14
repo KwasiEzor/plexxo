@@ -21,6 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::put('chapters/{chapter}', [ChapterController::class, 'update'])->name('chapters.update');
     Route::post('chapters/{chapter}/generate', [ChapterController::class, 'generate'])->name('chapters.generate');
     Route::post('chapters/{chapter}/revise', [ChapterController::class, 'revise'])->name('chapters.revise');
+    Route::post('chapters/{chapter}/translate', [ChapterController::class, 'translate'])->name('chapters.translate');
 
     Route::post('projects/{project:slug}/sources', [\App\Http\Controllers\SourceController::class, 'store'])->name('sources.store');
     Route::delete('sources/{source}', [\App\Http\Controllers\SourceController::class, 'destroy'])->name('sources.destroy');
