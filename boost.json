@@ -12,6 +12,7 @@
     "nightwatch_mcp": false,
     "sail": false,
     "skills": [
+        "cashier-stripe-development",
         "wayfinder-development",
         "pest-testing",
         "inertia-react-development",

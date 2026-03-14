@@ -18,6 +18,7 @@ import {
     Book, 
     ChevronLeft, 
     Download,
+    ExternalLink,
     FileText, 
     Image as ImageIcon, 
     Languages,
@@ -119,6 +120,16 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
 
     const handleExport = () => {
         window.open(projectsExportPdf({ project: project.slug }), '_blank');
+    };
+
+    const handleExportHtml = () => {
+        window.open(route('projects.export-html', { project: project.slug }), '_blank');
+    };
+
+    const handlePublish = () => {
+        if (confirm('Voulez-vous publier ce projet sur Gumroad ?')) {
+            router.post(route('projects.publish', { project: project.slug }));
+        }
     };
 
     const isGenerating = activeChapter?.status === 'generating';
@@ -264,7 +275,17 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
                                     </Button>
                                     <Button size="sm" onClick={handleExport}>
                                         <Download className="mr-2 h-4 w-4" />
-                                        Exporter PDF
+                                        PDF
+                                    </Button>
+
+                                    <Button size="sm" variant="outline" onClick={handleExportHtml}>
+                                        <FileText className="mr-2 h-4 w-4" />
+                                        HTML (SEO)
+                                    </Button>
+
+                                    <Button size="sm" variant="secondary" onClick={handlePublish}>
+                                        <ExternalLink className="mr-2 h-4 w-4" />
+                                        Publier (Gumroad)
                                     </Button>
                                 </div>
                             </header>

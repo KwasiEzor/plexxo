@@ -17,6 +17,8 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::post('projects/{project:slug}/cover', [ProjectController::class, 'updateCover'])->name('projects.update-cover');
     Route::post('projects/{project:slug}/invite', [ProjectController::class, 'invite'])->name('projects.invite');
     Route::get('projects/{project:slug}/export/pdf', [ProjectExportController::class, 'pdf'])->name('projects.export-pdf');
+    Route::get('projects/{project:slug}/export/html', [ProjectExportController::class, 'html'])->name('projects.export-html');
+    Route::post('projects/{project:slug}/publish', [ProjectExportController::class, 'publish'])->name('projects.publish');
 
     Route::put('chapters/{chapter}', [ChapterController::class, 'update'])->name('chapters.update');
     Route::post('chapters/{chapter}/generate', [ChapterController::class, 'generate'])->name('chapters.generate');

@@ -28,10 +28,10 @@ Plateforme d'édition collaborative augmentée par l'IA (Ebook Forge).
 - [x] Agent Réviseur (Critic Agent) pour le style et le ton.
 - [x] Traduction culturelle et multilingue natif.
 
-## 🏁 Phase 4 : Publication & Monétisation (À venir)
-- [ ] Publication directe (Amazon KDP, Gumroad).
-- [ ] Abonnements Stripe.
-- [ ] Optimisation SEO des exports HTML.
+## 🏁 Phase 4 : Publication & Monétisation (Terminée)
+- [x] Publication directe (Gumroad initialisé).
+- [x] Abonnements Stripe (Cashier initialisé).
+- [x] Optimisation SEO des exports HTML.
 
 ---
 *Dernière mise à jour : 14 Mars 2026*
