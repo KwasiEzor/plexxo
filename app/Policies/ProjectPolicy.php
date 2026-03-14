@@ -20,7 +20,8 @@ class ProjectPolicy
      */
     public function view(User $user, Project $project): bool
     {
-        return $user->id === $project->user_id;
+        return $user->id === $project->user_id || 
+               $project->collaborators()->where('user_id', $user->id)->exists();
     }
 
     /**
@@ -36,8 +37,14 @@ class ProjectPolicy
      */
     public function update(User $user, Project $project): bool
     {
-        // dd($user->id, $project->user_id);
-        return (int) $user->id === (int) $project->user_id;
+        if ($user->id === $project->user_id) {
+            return true;
+        }
+
+        return $project->collaborators()
+            ->where('user_id', $user->id)
+            ->wherePivotIn('role', ['editor', 'admin'])
+            ->exists();
     }
 
     /**
@@ -45,6 +52,13 @@ class ProjectPolicy
      */
     public function delete(User $user, Project $project): bool
     {
-        return $user->id === $project->user_id;
+        if ($user->id === $project->user_id) {
+            return true;
+        }
+
+        return $project->collaborators()
+            ->where('user_id', $user->id)
+            ->wherePivot('role', 'admin')
+            ->exists();
     }
 }

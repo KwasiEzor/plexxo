@@ -19,8 +19,8 @@ Plateforme d'édition collaborative augmentée par l'IA (Ebook Forge).
 
 ## 🤝 Phase 2 : Collaboration & Équipes (En cours)
 - [x] Système d'invitation de membres (TDD validé).
-- [ ] Gestion des rôles (Admin, Éditeur, Lecteur).
-- [ ] Permissions granulaires sur les projets.
+- [x] Gestion des rôles (Admin, Éditeur, Lecteur) via ProjectPolicy.
+- [x] Permissions granulaires sur les projets (TDD validé).
 - [ ] Indicateurs de présence en temps réel (Presence Channels).
 
 ## 🧠 Phase 3 : IA Avancée (À venir)

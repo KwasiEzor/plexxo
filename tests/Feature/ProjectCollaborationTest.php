@@ -46,3 +46,33 @@ it('prevents non-owners from inviting users', function () {
 
     $response->assertForbidden();
 });
+
+it('allows an editor to update a project', function () {
+    $owner = User::factory()->create();
+    $editor = User::factory()->create();
+    $project = Project::factory()->create(['user_id' => $owner->id]);
+    $project->collaborators()->attach($editor->id, ['role' => 'editor']);
+
+    $this->actingAs($editor);
+
+    $response = $this->put(route('chapters.update', $project->chapters()->create(['title' => 'Test'])), [
+        'content' => 'New content',
+    ]);
+
+    $response->assertRedirect();
+});
+
+it('prevents a viewer from updating a project', function () {
+    $owner = User::factory()->create();
+    $viewer = User::factory()->create();
+    $project = Project::factory()->create(['user_id' => $owner->id]);
+    $project->collaborators()->attach($viewer->id, ['role' => 'viewer']);
+
+    $this->actingAs($viewer);
+
+    $response = $this->put(route('chapters.update', $project->chapters()->create(['title' => 'Test'])), [
+        'content' => 'New content',
+    ]);
+
+    $response->assertForbidden();
+});
