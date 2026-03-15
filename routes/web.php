@@ -77,4 +77,8 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::delete('sources/{source}', [SourceController::class, 'destroy'])->name('sources.destroy');
 });
 
+use App\Http\Controllers\InvitationController;
+
+Route::get('invitations/{token}/accept', [InvitationController::class, 'accept'])->name('invitations.accept');
+
 require __DIR__.'/settings.php';

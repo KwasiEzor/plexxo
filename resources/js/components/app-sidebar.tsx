@@ -25,7 +25,8 @@ import {
     SidebarGroup,
     SidebarGroupLabel,
 } from '@/components/ui/sidebar';
-import { dashboard, assistant, templates as templatesLibrary } from '@/routes';
+import { dashboard, assistant } from '@/routes';
+import { index as templatesLibrary } from '@/routes/templates';
 import { index as myTemplates } from '@/routes/my-templates';
 import { edit as appearance } from '@/routes/appearance';
 import { edit as billing } from '@/routes/billing';
@@ -36,12 +37,12 @@ import type { NavItem } from '@/types';
 const platformItems: NavItem[] = [
     {
         title: 'Tableau de bord',
-        href: dashboard(),
+        href: dashboard().url,
         icon: LayoutGrid,
     },
     {
         title: 'Assistant IA',
-        href: assistant(),
+        href: assistant().url,
         icon: Sparkles,
     },
 ];
@@ -49,17 +50,17 @@ const platformItems: NavItem[] = [
 const libraryItems: NavItem[] = [
     {
         title: 'Mes Ebooks',
-        href: dashboard(), // Redirect to dashboard for now as it lists projects
+        href: dashboard().url, // Redirect to dashboard for now as it lists projects
         icon: Library,
     },
     {
         title: 'Mes Modèles',
-        href: myTemplates(),
+        href: myTemplates().url,
         icon: Bookmark,
     },
     {
         title: 'Modèles',
-        href: templatesLibrary(), 
+        href: templatesLibrary().url, 
         icon: BookOpen,
     },
 ];
@@ -67,22 +68,22 @@ const libraryItems: NavItem[] = [
 const settingsItems: NavItem[] = [
     {
         title: 'Profil',
-        href: profile(),
+        href: profile().url,
         icon: UserCircle,
     },
     {
         title: 'Sécurité',
-        href: security(),
+        href: security().url,
         icon: ShieldCheck,
     },
     {
         title: 'Facturation',
-        href: billing(),
+        href: billing().url,
         icon: CreditCard,
     },
     {
         title: 'Apparence',
-        href: appearance(),
+        href: appearance().url,
         icon: Palette,
     },
 ];
@@ -93,7 +94,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild className="hover:bg-transparent">
-                            <Link href={dashboard()} prefetch>
+                            <Link href={dashboard().url} prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
@@ -133,7 +134,7 @@ export function AppSidebar() {
                         Débloquez l'IA illimitée et l'exportation EPUB haute qualité.
                     </p>
                     <Link 
-                        href={billing()} 
+                        href={billing().url} 
                         className="text-[10px] font-bold text-primary hover:underline flex items-center gap-1"
                     >
                         En savoir plus <ChevronRight className="h-3 w-3" />

@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
+use App\Listeners\HandleProjectInvitationAfterRegistration;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Event;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -30,6 +34,11 @@ class AppServiceProvider extends ServiceProvider
         Broadcast::routes(['middleware' => ['web', 'auth']]);
 
         require base_path('routes/channels.php');
+
+        Event::listen(
+            Registered::class,
+            HandleProjectInvitationAfterRegistration::class,
+        );
     }
 
     /**

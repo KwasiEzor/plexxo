@@ -13,7 +13,7 @@ import { login } from '@/routes';
 import { store } from '@/routes/register';
 import { redirect as socialRedirect } from '@/routes/social';
 
-export default function Register() {
+export default function Register({ email }: { email?: string }) {
     return (
         <AuthLayout
             title="Create an account"
@@ -71,7 +71,7 @@ export default function Register() {
                     {...store.form()}
                     data={{
                         name: '',
-                        email: '',
+                        email: email || '',
                         password: '',
                         password_confirmation: '',
                     }}

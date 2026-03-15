@@ -19,7 +19,7 @@ export default function AuthSplitLayout({
                 <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl" />
                 
                 <div className="relative z-20 flex items-center mb-12">
-                    <Link href={home()} className="bg-white p-2 rounded-xl">
+                    <Link href={home().url} className="bg-white p-2 rounded-xl">
                         <AppLogo />
                     </Link>
                 </div>
@@ -68,7 +68,7 @@ export default function AuthSplitLayout({
             <div className="w-full lg:p-8 flex items-center justify-center">
                 <div className="mx-auto flex w-full flex-col justify-center space-y-8 sm:w-[400px]">
                     <div className="lg:hidden flex justify-center mb-8">
-                        <Link href={home()}>
+                        <Link href={home().url}>
                             <AppLogo />
                         </Link>
                     </div>

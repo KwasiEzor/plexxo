@@ -12,6 +12,10 @@ use App\Models\User;
 use App\Services\AI\ImageGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Models\ProjectInvitation;
+use App\Notifications\ProjectInvitationNotification;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Activitylog\Models\Activity;
@@ -132,17 +136,34 @@ class ProjectController extends Controller
         $this->authorize('invite', $project);
 
         $request->validate([
-            'email' => 'required|email|exists:users,email',
+            'email' => 'required|email',
             'role' => ['required', Rule::enum(UserRole::class)],
         ]);
 
         $user = User::where('email', $request->email)->first();
 
-        $project->collaborators()->syncWithoutDetaching([
-            $user->id => ['role' => $request->role],
-        ]);
+        if ($user) {
+            $project->collaborators()->syncWithoutDetaching([
+                $user->id => ['role' => $request->role],
+            ]);
 
-        return back()->with('success', 'Utilisateur invité avec succès.');
+            return back()->with('success', 'Utilisateur ajouté au projet.');
+        }
+
+        // If user doesn't exist, create an invitation
+        $invitation = ProjectInvitation::updateOrCreate(
+            ['project_id' => $project->id, 'email' => $request->email],
+            [
+                'role' => $request->role,
+                'token' => Str::random(40),
+                'expires_at' => now()->addDays(7),
+            ]
+        );
+
+        Notification::route('mail', $request->email)
+            ->notify(new ProjectInvitationNotification($invitation));
+
+        return back()->with('success', 'Invitation envoyée par email.');
     }
 
     /**
