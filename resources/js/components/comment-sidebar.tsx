@@ -1,18 +1,20 @@
 import { useForm } from '@inertiajs/react';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { MessageSquare, Send, CheckCircle2, Trash2 } from 'lucide-react';
+import { MessageSquare, Send, CheckCircle2, Trash2, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import type { Chapter } from '@/types/project';
+import { cn } from '@/lib/utils';
 
 interface CommentSidebarProps {
     chapter: Chapter;
+    hideHeader?: boolean;
 }
 
-export default function CommentSidebar({ chapter }: CommentSidebarProps) {
+export default function CommentSidebar({ chapter, hideHeader = false }: CommentSidebarProps) {
     const [isAdding, setIsAdding] = useState(false);
     
     const { data, setData, post, processing, reset } = useForm({
@@ -46,16 +48,29 @@ export default function CommentSidebar({ chapter }: CommentSidebarProps) {
     };
 
     return (
-        <aside className="w-80 border-l bg-sidebar flex flex-col hidden xl:flex">
-            <div className="p-4 border-b flex justify-between items-center bg-background/50">
-                <h2 className="font-semibold flex items-center text-sm">
-                    <MessageSquare className="mr-2 h-4 w-4" />
-                    Commentaires ({chapter.comments?.length || 0})
-                </h2>
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsAdding(!isAdding)}>
-                    <Send className="h-4 w-4" />
-                </Button>
-            </div>
+        <aside className={cn("w-80 border-l bg-sidebar flex flex-col hidden xl:flex", hideHeader && "border-l-0 w-full flex")}>
+            {!hideHeader && (
+                <div className="p-4 border-b flex justify-between items-center bg-background/50">
+                    <h2 className="font-semibold flex items-center text-sm">
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Commentaires ({chapter.comments?.length || 0})
+                    </h2>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsAdding(!isAdding)}>
+                        <Send className="h-4 w-4" />
+                    </Button>
+                </div>
+            )}
+
+            {hideHeader && (
+                <div className="px-4 pt-4 flex justify-between items-center">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                        {chapter.comments?.length || 0} Commentaires
+                    </span>
+                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setIsAdding(!isAdding)}>
+                        <Plus className="h-3.5 w-3.5" />
+                    </Button>
+                </div>
+            )}
 
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {isAdding && (

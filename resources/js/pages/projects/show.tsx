@@ -20,6 +20,7 @@ import CommentSidebar from '@/components/comment-sidebar';
 import CoverManager from '@/components/cover-manager';
 import ExportSettingsModal from '@/components/export-settings-modal';
 import PresenceAvatars from '@/components/presence-avatars';
+import ProjectActivityFeed from '@/components/project-activity-feed';
 import ProjectStats from '@/components/project-stats';
 import SourceList from '@/components/source-list';
 import StyleGuideModal from '@/components/style-guide-modal';
@@ -37,6 +38,7 @@ import type { BreadcrumbItem, Project, Chapter } from '@/types';
 interface ProjectShowProps {
     project: Project;
     cover_url?: string;
+    activities: any[];
 }
 
 interface PresenceUser {
@@ -44,7 +46,7 @@ interface PresenceUser {
     name: string;
 }
 
-export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
+export default function ProjectShow({ project, cover_url, activities }: ProjectShowProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: '/dashboard' },
         { title: project.title, href: projectsShow({ project: project.slug }) },
@@ -58,6 +60,7 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
     const [onlineUsers, setOnlineUsers] = useState<PresenceUser[]>([]);
     const [typingUsers, setTypingUsers] = useState<Record<number, string>>({});
     const [viewingChapters, setViewingChapters] = useState<Record<number, number>>({});
+    const [sidebarTab, setSidebarTab] = useState<'comments' | 'activity'>('comments');
     
     // Listen for real-time presence
     const { channel: presenceChannel } = useEchoPresence(`project.${project.id}`);
@@ -149,7 +152,7 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
             }
         }
 
-        router.reload({ only: ['project'] });
+        router.reload({ only: ['project', 'activities'] });
     });
 
     const handleSave = () => {
@@ -430,7 +433,38 @@ return;
                                 </div>
                             </div>
                             </div>
-                            <CommentSidebar chapter={activeChapter} />
+                            
+                            <aside className="w-80 border-l bg-sidebar flex flex-col hidden xl:flex overflow-hidden">
+                                <div className="grid grid-cols-2 p-1 bg-muted/50 border-b">
+                                    <button 
+                                        onClick={() => setSidebarTab('comments')}
+                                        className={`py-2 text-[10px] uppercase font-bold tracking-widest rounded-md transition-all ${
+                                            sidebarTab === 'comments' 
+                                            ? 'bg-background shadow-sm text-primary' 
+                                            : 'text-muted-foreground hover:text-foreground'
+                                        }`}
+                                    >
+                                        Commentaires
+                                    </button>
+                                    <button 
+                                        onClick={() => setSidebarTab('activity')}
+                                        className={`py-2 text-[10px] uppercase font-bold tracking-widest rounded-md transition-all ${
+                                            sidebarTab === 'activity' 
+                                            ? 'bg-background shadow-sm text-primary' 
+                                            : 'text-muted-foreground hover:text-foreground'
+                                        }`}
+                                    >
+                                        Activité
+                                    </button>
+                                </div>
+                                <div className="flex-1 overflow-hidden">
+                                    {sidebarTab === 'comments' ? (
+                                        <CommentSidebar chapter={activeChapter} hideHeader={true} />
+                                    ) : (
+                                        <ProjectActivityFeed activities={activities} />
+                                    )}
+                                </div>
+                            </aside>
                         </div>
                     ) : (
                         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">

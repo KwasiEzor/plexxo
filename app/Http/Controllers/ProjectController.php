@@ -8,6 +8,8 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Jobs\GenerateProjectOutline;
 use App\Models\Chapter;
 use App\Models\Project;
+use App\Models\Source;
+use App\Models\Comment;
 use App\Models\User;
 use App\Services\AI\ImageGenerator;
 use Illuminate\Http\Request;
@@ -83,12 +85,39 @@ class ProjectController extends Controller
     {
         $this->authorize('view', $project);
 
+        $activities = Activity::query()
+            ->where(function ($query) use ($project) {
+                $query->where(fn ($q) => $q->where('subject_type', Project::class)->where('subject_id', $project->id))
+                    ->orWhere(fn ($q) => $q->where('subject_type', Chapter::class)->whereIn('subject_id', $project->chapters()->pluck('id')))
+                    ->orWhere(fn ($q) => $q->where('subject_type', Source::class)->whereIn('subject_id', $project->sources()->pluck('id')))
+                    ->orWhere(fn ($q) => $q->where('subject_type', Comment::class)->whereIn('subject_id', Comment::whereIn('chapter_id', $project->chapters()->pluck('id'))->pluck('id')));
+            })
+            ->with('causer')
+            ->latest()
+            ->limit(20)
+            ->get()
+            ->map(function ($activity) {
+                return [
+                    'id' => $activity->id,
+                    'description' => $activity->description,
+                    'subject_type' => basename(str_replace('\\', '/', $activity->subject_type)),
+                    'event' => $activity->event,
+                    'causer' => $activity->causer ? [
+                        'id' => $activity->causer->id,
+                        'name' => $activity->causer->name,
+                    ] : null,
+                    'created_at' => $activity->created_at->toDateTimeString(),
+                    'properties' => $activity->properties,
+                ];
+            });
+
         return Inertia::render('projects/show', [
             'project' => $project->load([
                 'chapters' => fn ($q) => $q->with(['comments' => fn ($cq) => $cq->with('user')->latest()]),
                 'sources',
             ])->append('total_word_count'),
             'cover_url' => $project->getFirstMediaUrl('cover'),
+            'activities' => $activities,
         ]);
     }
 
