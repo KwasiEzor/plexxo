@@ -56,6 +56,8 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
     const [content, setContent] = useState(activeChapter?.content || '');
     const [isSaving, setIsSaving] = useState(false);
     const [onlineUsers, setOnlineUsers] = useState<PresenceUser[]>([]);
+    const [typingUsers, setTypingUsers] = useState<Record<number, string>>({});
+    const [viewingChapters, setViewingChapters] = useState<Record<number, number>>({});
     
     // Listen for real-time presence
     const { channel: presenceChannel } = useEchoPresence(`project.${project.id}`);
@@ -64,13 +66,80 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
         const channel = presenceChannel();
 
         if (!channel) {
-return;
-}
+            return;
+        }
         
-        channel.here((users: PresenceUser[]) => setOnlineUsers(users));
-        channel.joining((user: PresenceUser) => setOnlineUsers((prev) => [...prev, user]));
-        channel.leaving((user: PresenceUser) => setOnlineUsers((prev) => prev.filter((u) => u.id !== user.id)));
-    }, [presenceChannel]);
+        channel.here((users: PresenceUser[]) => {
+            setOnlineUsers(users);
+        });
+        
+        channel.joining((user: PresenceUser) => {
+            setOnlineUsers((prev) => [...prev, user]);
+        });
+        
+        channel.leaving((user: PresenceUser) => {
+            setOnlineUsers((prev) => prev.filter((u) => u.id !== user.id));
+            setTypingUsers((prev) => {
+                const next = { ...prev };
+                delete next[user.id];
+                return next;
+            });
+            setViewingChapters((prev) => {
+                const next = { ...prev };
+                delete next[user.id];
+                return next;
+            });
+        });
+
+        // Listen for typing whisper
+        channel.listenForWhisper('typing', (e: { id: number; name: string; chapter_id: number }) => {
+            setTypingUsers((prev) => ({
+                ...prev,
+                [e.id]: e.name
+            }));
+
+            // Clear typing after 3 seconds
+            setTimeout(() => {
+                setTypingUsers((prev) => {
+                    const next = { ...prev };
+                    delete next[e.id];
+                    return next;
+                });
+            }, 3000);
+        });
+
+        // Listen for viewing whisper
+        channel.listenForWhisper('viewing', (e: { id: number; name: string; chapter_id: number }) => {
+            setViewingChapters((prev) => ({
+                ...prev,
+                [e.id]: e.chapter_id
+            }));
+        });
+
+        // Initial whisper of what we are viewing
+        if (activeChapter) {
+            channel.whisper('viewing', {
+                id: (usePage().props as any).auth.user.id,
+                name: (usePage().props as any).auth.user.name,
+                chapter_id: activeChapter.id
+            });
+        }
+    }, [presenceChannel, activeChapter?.id]);
+
+    const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const newContent = e.target.value;
+        setContent(newContent);
+        
+        // Whisper typing
+        const channel = presenceChannel();
+        if (channel && activeChapter) {
+            channel.whisper('typing', {
+                id: (usePage().props as any).auth.user.id,
+                name: (usePage().props as any).auth.user.name,
+                chapter_id: activeChapter.id
+            });
+        }
+    };
 
     // Listen for real-time updates (collaboration / AI generation)
     useEcho(`project.${project.id}`, 'ChapterUpdated', (e: { chapter: Chapter }) => {
@@ -186,9 +255,22 @@ return;
                                     : 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
                                 }`}
                             >
-                                <span className="truncate flex-1">
-                                    {chapter.order + 1}. {chapter.title}
-                                </span>
+                                <div className="flex items-center flex-1 min-w-0">
+                                    <span className="truncate">
+                                        {chapter.order + 1}. {chapter.title}
+                                    </span>
+                                    {Object.entries(viewingChapters).filter(([uid, cid]) => cid === chapter.id && Number(uid) !== (usePage().props as any).auth.user.id).length > 0 && (
+                                        <div className="flex -space-x-1 ml-2 overflow-hidden">
+                                            {Object.entries(viewingChapters)
+                                                .filter(([uid, cid]) => cid === chapter.id && Number(uid) !== (usePage().props as any).auth.user.id)
+                                                .map(([uid, cid]) => (
+                                                    <div key={uid} className="h-4 w-4 rounded-full bg-primary/20 border border-background flex items-center justify-center text-[6px] font-bold">
+                                                        {onlineUsers.find(u => u.id === Number(uid))?.name[0].toUpperCase() || '?'}
+                                                    </div>
+                                                ))}
+                                        </div>
+                                    )}
+                                </div>
                                 {chapter.status === 'generating' && (
                                     <Loader2 className="ml-2 h-3 w-3 animate-spin" />
                                 )}
@@ -238,9 +320,18 @@ return;
                                         </span>
                                         <span className="text-[10px] text-muted-foreground">•</span>
                                         <span className="text-[10px] text-muted-foreground italic">
-
                                             Dernière modif: {new Date(activeChapter.updated_at).toLocaleTimeString()}
                                         </span>
+                                        {Object.entries(typingUsers).filter(([uid, name]) => Number(uid) !== (usePage().props as any).auth.user.id).map(([uid, name]) => (
+                                            <div key={uid} className="flex items-center gap-1.5 ml-4">
+                                                <div className="flex gap-0.5">
+                                                    <span className="h-1 w-1 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                                                    <span className="h-1 w-1 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                                                    <span className="h-1 w-1 bg-primary rounded-full animate-bounce"></span>
+                                                </div>
+                                                <span className="text-[10px] font-medium text-primary animate-pulse">{name} écrit...</span>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-2">
@@ -331,7 +422,7 @@ return;
                                     <div className="w-full bg-background shadow-sm border rounded-lg p-10 min-h-[1000px]">
                                         <textarea
                                             value={content}
-                                            onChange={(e) => setContent(e.target.value)}
+                                            onChange={handleContentChange}
                                             placeholder="Commencez à écrire ici ou laissez l'IA vous aider..."
                                             className="w-full h-full min-h-[800px] resize-none border-none focus:ring-0 text-lg leading-relaxed font-serif outline-none"
                                         />
