@@ -24,6 +24,7 @@ Route::controller(SocialLoginController::class)->prefix('auth/{provider}')->name
 Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('dashboard', [ProjectController::class, 'index'])->name('dashboard');
     Route::get('assistant', [AssistantController::class, 'index'])->name('assistant');
+    Route::get('collaborations', [App\Http\Controllers\CollaborationController::class, 'index'])->name('collaborations.index');
 
     Route::get('my-templates', [MyTemplatesController::class, 'index'])->name('my-templates.index');
 

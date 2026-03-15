@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { 
     LayoutGrid, 
     BookOpen, 
@@ -9,7 +9,11 @@ import {
     Palette,
     UserCircle,
     Zap,
-    Bookmark
+    Bookmark,
+    Users,
+    Shield,
+    Clock,
+    History
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
@@ -54,6 +58,11 @@ const libraryItems: NavItem[] = [
         icon: Library,
     },
     {
+        title: 'Collaborations',
+        href: route('collaborations.index'),
+        icon: Users,
+    },
+    {
         title: 'Mes Modèles',
         href: myTemplates().url,
         icon: Bookmark,
@@ -87,7 +96,29 @@ const settingsItems: NavItem[] = [
         icon: Palette,
     },
 ];
+
+const adminItems: NavItem[] = [
+    {
+        title: 'Dashboard Admin',
+        href: '#', 
+        icon: Shield,
+    },
+    {
+        title: 'Utilisateurs',
+        href: '#', 
+        icon: Users,
+    },
+    {
+        title: 'Tokens & Usage',
+        href: '#', 
+        icon: Zap,
+    },
+];
+
 export function AppSidebar() {
+    const { auth } = usePage().props as any;
+    const isAdmin = auth.user?.is_admin;
+
     return (
         <Sidebar collapsible="icon" variant="inset" className="border-r-0">
             <SidebarHeader className="py-4">
@@ -123,6 +154,15 @@ export function AppSidebar() {
                     </SidebarGroupLabel>
                     <NavMain items={settingsItems} />
                 </SidebarGroup>
+
+                {isAdmin && (
+                    <SidebarGroup>
+                        <SidebarGroupLabel className="text-[10px] uppercase tracking-widest font-bold text-red-500/80 px-4 mb-2">
+                            Administration
+                        </SidebarGroupLabel>
+                        <NavMain items={adminItems} />
+                    </SidebarGroup>
+                )}
 
                 {/* Promotional Widget in Sidebar */}
                 <div className="mx-4 mt-4 rounded-xl bg-primary/5 p-4 border border-primary/10 group">
