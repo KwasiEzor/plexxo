@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Enums\ChapterStatus;
+use App\Enums\ProjectStatus;
 use App\Events\ProjectOutlineGenerated;
 use App\Models\Project;
 use App\Services\AI\AIOrchestrator;
@@ -10,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class GenerateProjectOutline implements ShouldQueue
@@ -27,7 +30,17 @@ class GenerateProjectOutline implements ShouldQueue
     public function handle(): void
     {
         try {
-            $this->project->update(['status' => 'generating']);
+            if ($this->project->status !== ProjectStatus::Pending && $this->project->status !== ProjectStatus::Generating) {
+                return;
+            }
+
+            if ($this->project->chapters()->exists()) {
+                $this->project->update(['status' => ProjectStatus::Draft]);
+
+                return;
+            }
+
+            $this->project->update(['status' => ProjectStatus::Generating]);
 
             $ai = AIOrchestrator::provider();
             $outline = $ai->generateOutline($this->project->title, [
@@ -35,20 +48,28 @@ class GenerateProjectOutline implements ShouldQueue
                 'description' => $this->project->description,
             ]);
 
-            foreach ($outline as $index => $item) {
-                $this->project->chapters()->create([
-                    'title' => $item['title'],
-                    'order' => $index,
-                    'status' => 'empty',
-                ]);
-            }
+            DB::transaction(function () use ($outline): void {
+                if ($this->project->chapters()->exists()) {
+                    $this->project->update(['status' => ProjectStatus::Draft]);
 
-            $this->project->update(['status' => 'draft']);
+                    return;
+                }
+
+                foreach ($outline as $index => $item) {
+                    $this->project->chapters()->create([
+                        'title' => $item['title'],
+                        'order' => $index,
+                        'status' => ChapterStatus::Empty,
+                    ]);
+                }
+
+                $this->project->update(['status' => ProjectStatus::Draft]);
+            });
 
             event(new ProjectOutlineGenerated($this->project));
         } catch (\Exception $e) {
             Log::error("Failed to generate outline for project {$this->project->id}: ".$e->getMessage());
-            $this->project->update(['status' => 'failed']);
+            $this->project->update(['status' => ProjectStatus::Failed]);
         }
     }
 }

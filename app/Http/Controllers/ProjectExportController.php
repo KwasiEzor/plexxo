@@ -70,7 +70,9 @@ class ProjectExportController extends Controller
         // Finalize and Download
         $epub->finalize();
 
-        return response($epub->sendBook($project->slug))
+        $content = $epub->getBook();
+
+        return response($content)
             ->header('Content-Type', 'application/epub+zip')
             ->header('Content-Disposition', 'attachment; filename="'.$project->slug.'.epub"');
     }

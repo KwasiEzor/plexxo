@@ -8,7 +8,8 @@ import {
     CreditCard, 
     Palette,
     UserCircle,
-    Zap
+    Zap,
+    Bookmark
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
@@ -24,7 +25,8 @@ import {
     SidebarGroup,
     SidebarGroupLabel,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard, assistant, templates as templatesLibrary } from '@/routes';
+import { index as myTemplates } from '@/routes/my-templates';
 import { edit as appearance } from '@/routes/appearance';
 import { edit as billing } from '@/routes/billing';
 import { edit as profile } from '@/routes/profile';
@@ -39,7 +41,7 @@ const platformItems: NavItem[] = [
     },
     {
         title: 'Assistant IA',
-        href: '#', // Placeholder for AI Chat/Tools
+        href: assistant(),
         icon: Sparkles,
     },
 ];
@@ -51,8 +53,13 @@ const libraryItems: NavItem[] = [
         icon: Library,
     },
     {
+        title: 'Mes Modèles',
+        href: myTemplates(),
+        icon: Bookmark,
+    },
+    {
         title: 'Modèles',
-        href: '#', 
+        href: templatesLibrary(), 
         icon: BookOpen,
     },
 ];

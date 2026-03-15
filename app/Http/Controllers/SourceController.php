@@ -9,6 +9,7 @@ use App\Models\Project;
 use App\Models\Source;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 
 class SourceController extends Controller
 {
@@ -24,11 +25,16 @@ class SourceController extends Controller
         ]);
 
         $file = $request->file('file');
-        $extension = $file->getClientOriginalExtension();
+        $extension = Str::lower($file->getClientOriginalExtension());
+        $type = SourceType::tryFrom($extension);
+
+        if (! $type) {
+            return back()->with('error', "Type de fichier non pris en charge: {$extension}");
+        }
 
         $source = $project->sources()->create([
             'title' => $file->getClientOriginalName(),
-            'type' => SourceType::from($extension),
+            'type' => $type,
             'status' => SourceStatus::Pending,
         ]);
 

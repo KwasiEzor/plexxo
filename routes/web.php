@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\AssistantController;
 use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\MyTemplatesController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectExportController;
 use App\Http\Controllers\SourceController;
+use App\Http\Controllers\TemplateController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -13,30 +16,64 @@ Route::inertia('/', 'welcome', [
     'canRegister' => Features::enabled(Features::registration()),
 ])->name('home');
 
-Route::get('auth/{provider}/redirect', [SocialLoginController::class, 'redirect'])->name('social.redirect');
-Route::get('auth/{provider}/callback', [SocialLoginController::class, 'callback'])->name('social.callback');
+Route::controller(SocialLoginController::class)->prefix('auth/{provider}')->name('social.')->group(function () {
+    Route::get('redirect', 'redirect')->name('redirect');
+    Route::get('callback', 'callback')->name('callback');
+});
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('dashboard', [ProjectController::class, 'index'])->name('dashboard');
-    Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');
-    Route::get('projects/{project:slug}', [ProjectController::class, 'show'])->name('projects.show');
-    Route::post('projects/{project:slug}/cover', [ProjectController::class, 'updateCover'])->name('projects.update-cover');
-    Route::post('projects/{project:slug}/generate-cover', [ProjectController::class, 'generateCover'])->name('projects.generate-cover');
-    Route::post('projects/{project:slug}/invite', [ProjectController::class, 'invite'])->name('projects.invite');
-    Route::get('projects/{project:slug}/export/pdf', [ProjectExportController::class, 'pdf'])->name('projects.export-pdf');
-    Route::get('projects/{project:slug}/export/html', [ProjectExportController::class, 'html'])->name('projects.export-html');
-    Route::get('projects/{project:slug}/export/epub', [ProjectExportController::class, 'epub'])->name('projects.export-epub');
-    Route::post('projects/{project:slug}/publish', [ProjectExportController::class, 'publish'])->name('projects.publish');
+    Route::get('assistant', [AssistantController::class, 'index'])->name('assistant');
 
-    Route::put('chapters/{chapter}', [ChapterController::class, 'update'])->name('chapters.update');
-    Route::post('chapters/{chapter}/generate', [ChapterController::class, 'generate'])->name('chapters.generate');
-    Route::post('chapters/{chapter}/revise', [ChapterController::class, 'revise'])->name('chapters.revise');
-    Route::post('chapters/{chapter}/translate', [ChapterController::class, 'translate'])->name('chapters.translate');
-    Route::post('chapters/{chapter}/comments', [CommentController::class, 'store'])->name('comments.store');
-    Route::patch('comments/{comment}/resolve', [CommentController::class, 'resolve'])->name('comments.resolve');
-    Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::get('my-templates', [MyTemplatesController::class, 'index'])->name('my-templates.index');
+
+    Route::prefix('templates')->name('templates.')->group(function () {
+        Route::controller(TemplateController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('{template:slug}', 'show')->name('show');
+        });
+
+        Route::controller(MyTemplatesController::class)->group(function () {
+            Route::post('{template}/favorite', 'toggleFavorite')->name('favorite');
+            Route::post('{template}/archive', 'archive')->name('archive');
+            Route::delete('{template}', 'destroy')->name('destroy');
+        });
+    });
 
     Route::post('projects/{project:slug}/sources', [SourceController::class, 'store'])->name('sources.store');
+
+    Route::prefix('projects')->name('projects.')->group(function () {
+        Route::controller(ProjectController::class)->group(function () {
+            Route::post('/', 'store')->name('store');
+            Route::get('{project:slug}', 'show')->name('show');
+            Route::post('{project:slug}/cover', 'updateCover')->name('update-cover');
+            Route::post('{project:slug}/generate-cover', 'generateCover')->name('generate-cover');
+            Route::post('{project:slug}/invite', 'invite')->name('invite');
+        });
+
+        Route::controller(ProjectExportController::class)->prefix('{project:slug}')->group(function () {
+            Route::get('export/pdf', 'pdf')->name('export-pdf');
+            Route::get('export/html', 'html')->name('export-html');
+            Route::get('export/epub', 'epub')->name('export-epub');
+            Route::post('publish', 'publish')->name('publish');
+        });
+    });
+
+    Route::controller(ChapterController::class)->prefix('chapters/{chapter}')->name('chapters.')->group(function () {
+        Route::put('/', 'update')->name('update');
+        Route::post('generate', 'generate')->name('generate');
+        Route::post('revise', 'revise')->name('revise');
+        Route::post('translate', 'translate')->name('translate');
+    });
+
+    Route::controller(CommentController::class)->group(function () {
+        Route::post('chapters/{chapter}/comments', 'store')->name('comments.store');
+        Route::prefix('comments/{comment}')->name('comments.')->group(function () {
+            Route::patch('resolve', 'resolve')->name('resolve');
+            Route::delete('/', 'destroy')->name('destroy');
+        });
+    });
+
     Route::delete('sources/{source}', [SourceController::class, 'destroy'])->name('sources.destroy');
 });
 

@@ -63,4 +63,20 @@ class ProjectPolicy
 
         return $collaborator?->pivot->role->isAdmin() ?? false;
     }
+
+    /**
+     * Determine whether the user can invite collaborators.
+     */
+    public function invite(User $user, Project $project): bool
+    {
+        if ($user->id === $project->user_id) {
+            return true;
+        }
+
+        $collaborator = $project->collaborators()
+            ->where('user_id', $user->id)
+            ->first();
+
+        return $collaborator?->pivot->role->isAdmin() ?? false;
+    }
 }

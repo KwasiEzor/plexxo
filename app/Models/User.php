@@ -88,4 +88,25 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+
+    /**
+     * Get the templates owned by the user.
+     *
+     * @return HasMany<Template, $this>
+     */
+    public function templates(): HasMany
+    {
+        return $this->hasMany(Template::class);
+    }
+
+    /**
+     * Get the templates favorited by the user.
+     *
+     * @return BelongsToMany<Template, $this>
+     */
+    public function favoriteTemplates(): BelongsToMany
+    {
+        return $this->belongsToMany(Template::class, 'template_user')
+            ->withTimestamps();
+    }
 }

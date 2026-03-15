@@ -14,8 +14,9 @@ import {
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { Button } from '@/components/ui/button';
+import { dashboard } from '@/routes';
 
-export default function Welcome() {
+export default function Welcome({ auth }: { auth: { user: any } }) {
     return (
         <div className="min-h-screen bg-background selection:bg-primary/10 selection:text-primary">
             <Head title="Forgez vos Ebooks avec l'IA" />
@@ -30,10 +31,18 @@ export default function Welcome() {
                         <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">Tarifs</a>
                     </div>
                     <div className="flex items-center space-x-4">
-                        <Link href="/login" className="text-sm font-medium hover:text-primary transition-colors">Connexion</Link>
-                        <Button asChild className="rounded-full bg-gradient-to-r from-primary to-blue-600 hover:opacity-90 shadow-lg shadow-primary/20">
-                            <Link href="/register">Essai gratuit <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                        </Button>
+                        {auth.user ? (
+                            <Button asChild className="rounded-full bg-gradient-to-r from-primary to-blue-600 hover:opacity-90 shadow-lg shadow-primary/20">
+                                <Link href={dashboard().url}>Tableau de bord <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                            </Button>
+                        ) : (
+                            <>
+                                <Link href="/login" className="text-sm font-medium hover:text-primary transition-colors">Connexion</Link>
+                                <Button asChild className="rounded-full bg-gradient-to-r from-primary to-blue-600 hover:opacity-90 shadow-lg shadow-primary/20">
+                                    <Link href="/register">Essai gratuit <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                                </Button>
+                            </>
+                        )}
                     </div>
                 </div>
             </nav>
@@ -60,9 +69,15 @@ export default function Welcome() {
                         </p>
                         
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-500">
-                            <Button size="lg" className="h-14 px-8 rounded-2xl bg-primary hover:opacity-90 text-lg shadow-xl shadow-primary/30 w-full sm:w-auto" asChild>
-                                <Link href="/register">Commencer la forge <ChevronRight className="ml-2 h-5 w-5" /></Link>
-                            </Button>
+                            {auth.user ? (
+                                <Button size="lg" className="h-14 px-8 rounded-2xl bg-primary hover:opacity-90 text-lg shadow-xl shadow-primary/30 w-full sm:w-auto" asChild>
+                                    <Link href={dashboard().url}>Aller au Tableau de bord <ChevronRight className="ml-2 h-5 w-5" /></Link>
+                                </Button>
+                            ) : (
+                                <Button size="lg" className="h-14 px-8 rounded-2xl bg-primary hover:opacity-90 text-lg shadow-xl shadow-primary/30 w-full sm:w-auto" asChild>
+                                    <Link href="/register">Commencer la forge <ChevronRight className="ml-2 h-5 w-5" /></Link>
+                                </Button>
+                            )}
                             <Button variant="outline" size="lg" className="h-14 px-8 rounded-2xl text-lg border-2 w-full sm:w-auto">
                                 Voir la démo
                             </Button>

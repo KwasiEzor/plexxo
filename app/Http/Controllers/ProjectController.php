@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ProjectStatus;
+use App\Enums\UserRole;
 use App\Http\Requests\StoreProjectRequest;
 use App\Jobs\GenerateProjectOutline;
 use App\Models\Chapter;
@@ -10,6 +11,7 @@ use App\Models\Project;
 use App\Models\User;
 use App\Services\AI\ImageGenerator;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Activitylog\Models\Activity;
@@ -23,15 +25,20 @@ class ProjectController extends Controller
     {
         $user = $request->user();
 
-        $projects = $user->projects()
+        $projectIds = $user->projects()->pluck('projects.id');
+
+        $projects = Project::query()
+            ->whereIn('id', $projectIds)
             ->withCount('chapters')
             ->latest()
             ->paginate(6);
 
         $stats = [
-            'total_projects' => $user->projects()->count(),
-            'total_chapters' => Chapter::whereIn('project_id', $user->projects()->pluck('id'))->count(),
-            'total_words' => $user->projects->sum('total_word_count'),
+            'total_projects' => $projectIds->count(),
+            'total_chapters' => Chapter::whereIn('project_id', $projectIds)->count(),
+            'total_words' => Chapter::whereIn('project_id', $projectIds)
+                ->get()
+                ->sum(fn ($chapter) => str_word_count($chapter->content ?? '')),
             'ai_tokens_used' => 12500, // Mocked for now
         ];
 
@@ -122,11 +129,11 @@ class ProjectController extends Controller
      */
     public function invite(Request $request, Project $project)
     {
-        $this->authorize('update', $project);
+        $this->authorize('invite', $project);
 
         $request->validate([
             'email' => 'required|email|exists:users,email',
-            'role' => 'required|string|in:viewer,editor,admin',
+            'role' => ['required', Rule::enum(UserRole::class)],
         ]);
 
         $user = User::where('email', $request->email)->first();
