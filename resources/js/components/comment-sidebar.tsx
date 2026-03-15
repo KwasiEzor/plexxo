@@ -5,8 +5,8 @@ import { MessageSquare, Send, CheckCircle2, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import type { Chapter } from '@/types/project';
 import { Textarea } from '@/components/ui/textarea';
+import type { Chapter } from '@/types/project';
 
 interface CommentSidebarProps {
     chapter: Chapter;

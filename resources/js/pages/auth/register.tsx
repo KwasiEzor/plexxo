@@ -69,6 +69,12 @@ export default function Register() {
 
                 <Form
                     {...store.form()}
+                    data={{
+                        name: '',
+                        email: '',
+                        password: '',
+                        password_confirmation: '',
+                    }}
                     resetOnSuccess={['password', 'password_confirmation']}
                     disableWhileProcessing
                     className="flex flex-col gap-6"
@@ -118,7 +124,7 @@ export default function Register() {
                                         name="password"
                                         placeholder="Password"
                                     />
-                                    <PasswordStrength password={data.password} />
+                                    <PasswordStrength password={data?.password} />
                                     <InputError message={errors.password} />
                                 </div>
 

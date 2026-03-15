@@ -14,8 +14,18 @@ class BillingController extends Controller
      */
     public function index(Request $request): Response
     {
+        $intent = null;
+
+        if (config('cashier.secret')) {
+            try {
+                $intent = $request->user()->createSetupIntent();
+            } catch (\Exception $e) {
+                // Log or handle error if needed
+            }
+        }
+
         return Inertia::render('settings/billing', [
-            'intent' => $request->user()->createSetupIntent(),
+            'intent' => $intent,
             'subscription' => $request->user()->subscription('default'),
         ]);
     }

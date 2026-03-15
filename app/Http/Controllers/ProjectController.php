@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Enums\ProjectStatus;
 use App\Http\Requests\StoreProjectRequest;
 use App\Jobs\GenerateProjectOutline;
+use App\Models\Chapter;
 use App\Models\Project;
 use App\Models\User;
 use App\Services\AI\ImageGenerator;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Activitylog\Models\Activity;
 
 class ProjectController extends Controller
 {
@@ -19,13 +21,29 @@ class ProjectController extends Controller
      */
     public function index(Request $request): Response
     {
-        $projects = $request->user()->projects()
+        $user = $request->user();
+
+        $projects = $user->projects()
             ->withCount('chapters')
             ->latest()
-            ->paginate(10);
+            ->paginate(6);
+
+        $stats = [
+            'total_projects' => $user->projects()->count(),
+            'total_chapters' => Chapter::whereIn('project_id', $user->projects()->pluck('id'))->count(),
+            'total_words' => $user->projects->sum('total_word_count'),
+            'ai_tokens_used' => 12500, // Mocked for now
+        ];
+
+        $recentActivity = Activity::where('causer_id', $user->id)
+            ->latest()
+            ->limit(5)
+            ->get();
 
         return Inertia::render('dashboard', [
             'projects' => $projects,
+            'stats' => $stats,
+            'recentActivity' => $recentActivity,
         ]);
     }
 

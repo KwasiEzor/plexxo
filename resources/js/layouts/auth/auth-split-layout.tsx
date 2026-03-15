@@ -12,11 +12,11 @@ export default function AuthSplitLayout({
     return (
         <div className="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0 bg-background">
             <div className="relative hidden h-full flex-col p-16 text-white lg:flex overflow-hidden">
-                <div className="absolute inset-0 bg-linear-to-br from-indigo-700 via-indigo-600 to-violet-700" />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-blue-600" />
                 
                 {/* Decorative Elements */}
                 <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl" />
+                <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl" />
                 
                 <div className="relative z-20 flex items-center mb-12">
                     <Link href={home()} className="bg-white p-2 rounded-xl">
@@ -26,24 +26,24 @@ export default function AuthSplitLayout({
 
                 <div className="relative z-20 mt-auto">
                     <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-bold tracking-wider uppercase mb-6">
-                        <Sparkles className="h-3 w-3 mr-2 text-indigo-200" />
+                        <Sparkles className="h-3 w-3 mr-2 text-primary-foreground/70" />
                         Rejoignez la Forge
                     </div>
                     <h2 className="text-4xl font-black tracking-tight leading-tight mb-8">
                         L'avenir de l'édition numérique commence ici.
                     </h2>
                     
-                    <ul className="space-y-4 text-indigo-100">
+                    <ul className="space-y-4 text-primary-foreground/80">
                         <li className="flex items-center gap-3">
-                            <CheckCircle2 className="h-5 w-5 text-indigo-300" />
+                            <CheckCircle2 className="h-5 w-5 text-primary-foreground/60" />
                             <span>Génération de plans intelligents par IA</span>
                         </li>
                         <li className="flex items-center gap-3">
-                            <CheckCircle2 className="h-5 w-5 text-indigo-300" />
+                            <CheckCircle2 className="h-5 w-5 text-primary-foreground/60" />
                             <span>Collaboration temps réel pour équipes</span>
                         </li>
                         <li className="flex items-center gap-3">
-                            <CheckCircle2 className="h-5 w-5 text-indigo-300" />
+                            <CheckCircle2 className="h-5 w-5 text-primary-foreground/60" />
                             <span>Export PDF & EPUB prêt pour la vente</span>
                         </li>
                     </ul>
@@ -51,12 +51,12 @@ export default function AuthSplitLayout({
                     <div className="mt-12 pt-12 border-t border-white/10 flex items-center gap-4">
                         <div className="flex -space-x-2">
                             {[1,2,3,4].map(i => (
-                                <div key={i} className="h-8 w-8 rounded-full border-2 border-indigo-600 bg-indigo-400 flex items-center justify-center text-[10px] font-bold">
+                                <div key={i} className="h-8 w-8 rounded-full border-2 border-primary bg-blue-400 flex items-center justify-center text-[10px] font-bold text-white">
                                     {String.fromCharCode(64 + i)}
                                 </div>
                             ))}
                         </div>
-                        <p className="text-sm text-indigo-200 font-medium">+2,400 auteurs nous font confiance</p>
+                        <p className="text-sm text-primary-foreground/70 font-medium">+2,400 auteurs nous font confiance</p>
                     </div>
                 </div>
                 

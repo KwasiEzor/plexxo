@@ -69,7 +69,7 @@ export default function CoverManager({ project, coverUrl }: CoverManagerProps) {
                     <Upload className="mr-2 h-3 w-3" />
                     Uploader
                 </Button>
-                <Button variant="outline" size="sm" className="text-purple-500" onClick={handleGenerate} disabled={processing}>
+                <Button variant="outline" size="sm" className="text-primary" onClick={handleGenerate} disabled={processing}>
                     <Sparkles className="mr-2 h-3 w-3" />
                     IA Cover
                 </Button>

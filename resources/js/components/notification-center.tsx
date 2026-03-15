@@ -9,7 +9,7 @@ export default function NotificationCenter() {
     useEchoNotification(auth.user ? `App.Models.User.${auth.user.id}` : null, (notification: any) => {
         toast(notification.message || 'Nouvelle notification', {
             description: notification.chapter_title || notification.user_name,
-            icon: <Bell className="h-4 w-4 text-indigo-500" />,
+            icon: <Bell className="h-4 w-4 text-blue-500" />,
             action: {
                 label: 'Voir',
                 onClick: () => {

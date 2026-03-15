@@ -62,6 +62,10 @@ export default function ProjectShow({ project, cover_url }: ProjectShowProps) {
 
     useEffect(() => {
         const channel = presenceChannel();
+
+        if (!channel) {
+return;
+}
         
         channel.here((users: PresenceUser[]) => setOnlineUsers(users));
         channel.joining((user: PresenceUser) => setOnlineUsers((prev) => [...prev, user]));
@@ -208,7 +212,7 @@ return;
                                     {isGenerating ? (
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                     ) : (
-                                        <Sparkles className="mr-2 h-4 w-4 text-purple-500" />
+                                        <Sparkles className="mr-2 h-4 w-4 text-primary" />
                                     )}
                                     {isGenerating ? 'IA en cours...' : "Rédiger ce chapitre"}
                                 </Button>

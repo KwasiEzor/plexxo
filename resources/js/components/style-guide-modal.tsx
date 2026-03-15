@@ -12,8 +12,8 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import type { Project } from '@/types/project';
 import { Textarea } from '@/components/ui/textarea';
+import type { Project } from '@/types/project';
 
 interface StyleGuideModalProps {
     project: Project;
@@ -49,14 +49,14 @@ export default function StyleGuideModal({ project }: StyleGuideModalProps) {
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="ghost" size="icon" title="Guide de Style IA">
-                    <Sparkles className="h-4 w-4 text-purple-500" />
+                    <Sparkles className="h-4 w-4 text-primary" />
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[525px]">
                 <form onSubmit={handleSubmit}>
                     <DialogHeader>
                         <DialogTitle className="flex items-center">
-                            <Sparkles className="mr-2 h-5 w-5 text-purple-500" />
+                            <Sparkles className="mr-2 h-5 w-5 text-primary" />
                             Guide de Style IA
                         </DialogTitle>
                         <DialogDescription>

@@ -8,11 +8,20 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Spinner } from '@/components/ui/spinner';
 import AuthLayout from '@/layouts/auth-layout';
-import { forgotPassword, register } from '@/routes';
+import { register } from '@/routes';
 import { store } from '@/routes/login';
+import { request as forgotPassword } from '@/routes/password';
 import { redirect as socialRedirect } from '@/routes/social';
 
-export default function Login({ status }: { status?: string }) {
+export default function Login({ 
+    status, 
+    canResetPassword, 
+    canRegister 
+}: { 
+    status?: string;
+    canResetPassword?: boolean;
+    canRegister?: boolean;
+}) {
     return (
         <AuthLayout
             title="Log in to your account"
@@ -74,6 +83,11 @@ export default function Login({ status }: { status?: string }) {
 
                 <Form
                     {...store.form()}
+                    data={{
+                        email: '',
+                        password: '',
+                        remember: false,
+                    }}
                     resetOnSuccess={['password']}
                     disableWhileProcessing
                     className="flex flex-col gap-6"
@@ -99,13 +113,15 @@ export default function Login({ status }: { status?: string }) {
                                 <div className="grid gap-2">
                                     <div className="flex items-center justify-between">
                                         <Label htmlFor="password">Password</Label>
-                                        <TextLink
-                                            href={forgotPassword()}
-                                            tabIndex={5}
-                                            className="text-xs"
-                                        >
-                                            Forgot your password?
-                                        </TextLink>
+                                        {canResetPassword && (
+                                            <TextLink
+                                                href={forgotPassword()}
+                                                tabIndex={5}
+                                                className="text-xs"
+                                            >
+                                                Forgot your password?
+                                            </TextLink>
+                                        )}
                                     </div>
                                     <Input
                                         id="password"
@@ -143,12 +159,14 @@ export default function Login({ status }: { status?: string }) {
                                 </Button>
                             </div>
 
-                            <div className="text-center text-sm text-muted-foreground">
-                                Don't have an account?{' '}
-                                <TextLink href={register()} tabIndex={6}>
-                                    Sign up
-                                </TextLink>
-                            </div>
+                            {canRegister && (
+                                <div className="text-center text-sm text-muted-foreground">
+                                    Don't have an account?{' '}
+                                    <TextLink href={register()} tabIndex={6}>
+                                        Sign up
+                                    </TextLink>
+                                </div>
+                            )}
                         </>
                     )}
                 </Form>

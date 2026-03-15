@@ -51,7 +51,7 @@ export default function ProjectStats({ project }: ProjectStatsProps) {
 
             <Card className="bg-background/50">
                 <CardContent className="p-4 flex items-center space-x-3">
-                    <div className="p-2 rounded-lg bg-purple-500/10 text-purple-500">
+                    <div className="p-2 rounded-lg bg-primary/10 text-primary">
                         <BarChart3 className="h-4 w-4" />
                     </div>
                     <div>

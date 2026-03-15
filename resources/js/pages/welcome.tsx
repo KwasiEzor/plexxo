@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 
 export default function Welcome() {
     return (
-        <div className="min-h-screen bg-background selection:bg-indigo-100 selection:text-indigo-900">
+        <div className="min-h-screen bg-background selection:bg-primary/10 selection:text-primary">
             <Head title="Forgez vos Ebooks avec l'IA" />
             
             {/* Navigation */}
@@ -31,7 +31,7 @@ export default function Welcome() {
                     </div>
                     <div className="flex items-center space-x-4">
                         <Link href="/login" className="text-sm font-medium hover:text-primary transition-colors">Connexion</Link>
-                        <Button asChild className="rounded-full bg-linear-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 shadow-lg shadow-indigo-500/20">
+                        <Button asChild className="rounded-full bg-gradient-to-r from-primary to-blue-600 hover:opacity-90 shadow-lg shadow-primary/20">
                             <Link href="/register">Essai gratuit <ArrowRight className="ml-2 h-4 w-4" /></Link>
                         </Button>
                     </div>
@@ -42,17 +42,17 @@ export default function Welcome() {
             <section className="pt-32 pb-20 overflow-hidden">
                 <div className="container mx-auto px-6 relative">
                     {/* Background Gradients */}
-                    <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
-                    <div className="absolute top-1/2 -left-24 w-72 h-72 bg-violet-500/10 rounded-full blur-3xl" />
+                    <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
+                    <div className="absolute top-1/2 -left-24 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
                     
                     <div className="max-w-4xl mx-auto text-center space-y-8 relative">
-                        <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 text-xs font-bold tracking-wider uppercase border border-indigo-100 dark:border-indigo-900 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                        <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-primary/10 dark:bg-primary/5 text-primary text-xs font-bold tracking-wider uppercase border border-primary/10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                             <Sparkles className="h-3.5 w-3.5 mr-2" />
                             L'IA au service de votre créativité
                         </div>
                         
                         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] text-foreground animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
-                            Transformez vos idées en <span className="bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-violet-600 italic">Ebooks Professionnels</span> en quelques minutes
+                            Transformez vos idées en <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600 italic">Ebooks Professionnels</span> en quelques minutes
                         </h1>
                         
                         <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300">
@@ -60,7 +60,7 @@ export default function Welcome() {
                         </p>
                         
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-500">
-                            <Button size="lg" className="h-14 px-8 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-lg shadow-xl shadow-indigo-500/30 w-full sm:w-auto" asChild>
+                            <Button size="lg" className="h-14 px-8 rounded-2xl bg-primary hover:opacity-90 text-lg shadow-xl shadow-primary/30 w-full sm:w-auto" asChild>
                                 <Link href="/register">Commencer la forge <ChevronRight className="ml-2 h-5 w-5" /></Link>
                             </Button>
                             <Button variant="outline" size="lg" className="h-14 px-8 rounded-2xl text-lg border-2 w-full sm:w-auto">
@@ -71,7 +71,7 @@ export default function Welcome() {
                         {/* Mockup Dashboard Preview */}
                         <div className="mt-16 relative rounded-3xl border-2 border-white/10 dark:border-white/5 shadow-2xl overflow-hidden bg-muted p-2 animate-in fade-in zoom-in-95 duration-1000 delay-700">
                             <div className="rounded-2xl border bg-background overflow-hidden aspect-video relative">
-                                <div className="absolute inset-0 bg-linear-to-br from-indigo-500/5 to-violet-500/5 flex items-center justify-center">
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-blue-600/5 flex items-center justify-center">
                                     <div className="w-4/5 h-3/4 bg-background rounded-xl shadow-lg border p-6 flex flex-col gap-4">
                                         <div className="h-4 w-1/3 bg-muted rounded animate-pulse" />
                                         <div className="flex-1 grid grid-cols-12 gap-4">
@@ -107,38 +107,38 @@ export default function Welcome() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {[
                             {
-                                icon: <Sparkles className="h-6 w-6 text-indigo-600" />,
+                                icon: <Sparkles className="h-6 w-6 text-primary" />,
                                 title: "Intelligence Augmentée",
                                 desc: "Générez des plans, rédigez des chapitres entiers ou réécrivez vos paragraphes en un clic."
                             },
                             {
-                                icon: <Users className="h-6 w-6 text-violet-600" />,
+                                icon: <Users className="h-6 w-6 text-blue-600" />,
                                 title: "Mode Équipe Natif",
                                 desc: "Collaborez en temps réel avec vos relecteurs, correcteurs et designers sur une plateforme unique."
                             },
                             {
-                                icon: <Layout className="h-6 w-6 text-indigo-600" />,
+                                icon: <Layout className="h-6 w-6 text-primary" />,
                                 title: "Templates Métier",
                                 desc: "Livres blancs, guides techniques ou lead magnets : des structures adaptées à chaque besoin."
                             },
                             {
-                                icon: <Globe className="h-6 w-6 text-violet-600" />,
+                                icon: <Globe className="h-6 w-6 text-blue-600" />,
                                 title: "Adaptation Culturelle",
                                 desc: "Ne vous contentez pas de traduire. Adaptez votre contenu aux idiomes et cultures locales."
                             },
                             {
-                                icon: <Zap className="h-6 w-6 text-indigo-600" />,
+                                icon: <Zap className="h-6 w-6 text-primary" />,
                                 title: "Export Multi-format",
                                 desc: "Exportez vers PDF, EPUB 3 ou publiez directement sur WordPress, Amazon KDP ou Gumroad."
                             },
                             {
-                                icon: <Layers className="h-6 w-6 text-violet-600" />,
+                                icon: <Layers className="h-6 w-6 text-blue-600" />,
                                 title: "Sources Privées (RAG)",
                                 desc: "Uploadez vos propres documents pour que l'IA rédige en se basant uniquement sur vos sources."
                             }
                         ].map((feature, i) => (
-                            <div key={i} className="group p-8 rounded-3xl bg-background border transition-all hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-1">
-                                <div className="size-12 rounded-2xl bg-muted flex items-center justify-center mb-6 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-950/50 transition-colors">
+                            <div key={i} className="group p-8 rounded-3xl bg-background border transition-all hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1">
+                                <div className="size-12 rounded-2xl bg-muted flex items-center justify-center mb-6 group-hover:bg-primary/10 transition-colors">
                                     {feature.icon}
                                 </div>
                                 <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
@@ -154,7 +154,7 @@ export default function Welcome() {
                 <div className="container mx-auto px-6">
                     <div className="flex flex-col lg:flex-row items-center gap-16">
                         <div className="flex-1 space-y-8">
-                            <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight">Le processus de création <br/><span className="text-indigo-600">réinventé</span></h2>
+                            <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight">Le processus de création <br/><span className="text-primary">réinventé</span></h2>
                             <div className="space-y-6">
                                 {[
                                     { step: "01", title: "Forge du Plan", desc: "Décrivez votre idée et laissez l'IA forger un plan détaillé et structuré en quelques secondes." },
@@ -173,11 +173,11 @@ export default function Welcome() {
                             </div>
                         </div>
                         <div className="flex-1 relative">
-                            <div className="absolute inset-0 bg-linear-to-tr from-indigo-500 to-violet-500 rounded-3xl rotate-3 scale-95 opacity-20 blur-2xl" />
+                            <div className="absolute inset-0 bg-gradient-to-tr from-primary to-blue-600 rounded-3xl rotate-3 scale-95 opacity-20 blur-2xl" />
                             <div className="relative rounded-3xl overflow-hidden shadow-2xl border bg-background p-4 aspect-square flex items-center justify-center">
                                 <div className="text-center space-y-6">
-                                    <div className="size-24 rounded-full bg-indigo-50 dark:bg-indigo-950/50 flex items-center justify-center mx-auto">
-                                        <Sparkles className="h-12 w-12 text-indigo-600" />
+                                    <div className="size-24 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+                                        <Sparkles className="h-12 w-12 text-primary" />
                                     </div>
                                     <div className="space-y-2">
                                         <div className="h-4 w-48 bg-muted rounded mx-auto animate-pulse" />
@@ -231,8 +231,8 @@ export default function Welcome() {
                         </div>
 
                         {/* Premium Plan */}
-                        <div className="flex flex-col p-8 rounded-3xl bg-background border-2 border-indigo-600 relative transition-all hover:shadow-xl shadow-indigo-500/10">
-                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-indigo-600 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                        <div className="flex flex-col p-8 rounded-3xl bg-background border-2 border-primary relative transition-all hover:shadow-xl shadow-primary/10">
+                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                                 Recommandé
                             </div>
                             <div className="mb-8">
@@ -265,7 +265,7 @@ export default function Welcome() {
                                     Publication directe Gumroad/KDP
                                 </li>
                             </ul>
-                            <Button className="w-full rounded-xl h-12 bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/20" asChild>
+                            <Button className="w-full rounded-xl h-12 bg-primary hover:opacity-90 shadow-lg shadow-primary/20" asChild>
                                 <Link href="/register">Devenir Premium</Link>
                             </Button>
                         </div>
@@ -276,18 +276,18 @@ export default function Welcome() {
             {/* CTA Section */}
             <section className="py-24">
                 <div className="container mx-auto px-6 text-center">
-                    <div className="max-w-4xl mx-auto rounded-4xl bg-linear-to-r from-indigo-600 to-violet-600 p-12 md:p-20 text-white shadow-2xl shadow-indigo-500/30 relative overflow-hidden">
+                    <div className="max-w-4xl mx-auto rounded-4xl bg-gradient-to-r from-primary to-blue-600 p-12 md:p-20 text-white shadow-2xl shadow-primary/30 relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-8 opacity-10">
                             <BookOpen className="h-64 w-64 rotate-12" />
                         </div>
                         <div className="relative z-10 space-y-8">
                             <h2 className="text-3xl md:text-5xl font-black">Prêt à forger votre prochain succès ?</h2>
-                            <p className="text-indigo-100 text-lg md:text-xl max-w-2xl mx-auto">Rejoignez des milliers de créateurs qui utilisent Plexxo pour transformer leur expertise en actifs numériques lucratifs.</p>
+                            <p className="text-primary-foreground/80 text-lg md:text-xl max-w-2xl mx-auto">Rejoignez des milliers de créateurs qui utilisent Plexxo pour transformer leur expertise en actifs numériques lucratifs.</p>
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                                <Button size="lg" variant="secondary" className="h-14 px-10 rounded-2xl text-lg font-bold w-full sm:w-auto text-indigo-600" asChild>
+                                <Button size="lg" variant="secondary" className="h-14 px-10 rounded-2xl text-lg font-bold w-full sm:w-auto text-primary" asChild>
                                     <Link href="/register">Essayer Gratuitement</Link>
                                 </Button>
-                                <p className="text-sm font-medium text-indigo-200">Aucune carte de crédit requise.</p>
+                                <p className="text-sm font-medium text-primary-foreground/60">Aucune carte de crédit requise.</p>
                             </div>
                         </div>
                     </div>
