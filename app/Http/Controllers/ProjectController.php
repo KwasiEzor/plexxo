@@ -48,15 +48,35 @@ class ProjectController extends Controller
             'ai_tokens_used' => 12500, // Mocked for now
         ];
 
-        $recentActivity = Activity::where('causer_id', $user->id)
+        $recentActivity = Activity::query()
+            ->where(function ($query) use ($projectIds) {
+                $query->whereIn('subject_id', $projectIds)
+                    ->whereIn('subject_type', [Project::class, Chapter::class, Source::class, Comment::class]);
+            })
+            ->with('causer')
             ->latest()
-            ->limit(5)
-            ->get();
+            ->limit(10)
+            ->get()
+            ->map(fn ($activity) => [
+                'id' => $activity->id,
+                'description' => $activity->description,
+                'event' => $activity->event,
+                'subject_type' => basename(str_replace('\\', '/', $activity->subject_type)),
+                'causer' => $activity->causer ? ['name' => $activity->causer->name] : null,
+                'created_at' => $activity->created_at->toDateTimeString(),
+            ]);
+
+        $pendingInvitations = ProjectInvitation::where('email', $user->email)
+            ->with('project')
+            ->get()
+            ->filter(fn ($invitation) => ! $invitation->hasExpired())
+            ->values();
 
         return Inertia::render('dashboard', [
             'projects' => $projects,
             'stats' => $stats,
             'recentActivity' => $recentActivity,
+            'pendingInvitations' => $pendingInvitations,
         ]);
     }
 

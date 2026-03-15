@@ -10,7 +10,8 @@ import {
     Search, 
     ChevronRight,
     Sparkles,
-    FileText
+    FileText,
+    Users
 } from 'lucide-react';
 import CreateProject from '@/components/create-project';
 import ProjectCard from '@/components/project-card';
@@ -23,7 +24,7 @@ import type { BreadcrumbItem, Project } from '@/types';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Tableau de bord',
-        href: dashboard(),
+        href: dashboard().url,
     },
 ];
 
@@ -39,9 +40,10 @@ interface DashboardProps {
         ai_tokens_used: number;
     };
     recentActivity: any[];
+    pendingInvitations: any[];
 }
 
-export default function Dashboard({ projects, stats, recentActivity }: DashboardProps) {
+export default function Dashboard({ projects, stats, recentActivity, pendingInvitations }: DashboardProps) {
     const { auth } = usePage().props as any;
 
     useEcho(auth.user ? `user.${auth.user.id}` : null, 'ProjectOutlineGenerated', () => {
@@ -128,6 +130,39 @@ export default function Dashboard({ projects, stats, recentActivity }: Dashboard
                     </Card>
                 </div>
 
+                {/* Invitations Alert */}
+                {pendingInvitations.length > 0 && (
+                    <div className="grid gap-4">
+                        {pendingInvitations.map((invitation) => (
+                            <Card key={invitation.id} className="border-primary/20 bg-primary/5 shadow-none">
+                                <CardContent className="flex items-center justify-between p-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className="rounded-full bg-primary/10 p-2">
+                                            <Users className="h-5 w-5 text-primary" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-semibold">
+                                                Invitation en attente
+                                            </p>
+                                            <p className="text-xs text-muted-foreground">
+                                                Vous avez été invité à rejoindre le projet <span className="font-bold text-foreground">"{invitation.project.title}"</span> en tant qu' <span className="font-bold text-foreground">{invitation.role}</span>.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Link 
+                                            href={route('invitations.accept', { token: invitation.token })}
+                                            className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90"
+                                        >
+                                            Accepter
+                                        </Link>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                )}
+
                 <div className="grid gap-8 md:grid-cols-7">
                     {/* Projects Section */}
                     <div className="md:col-span-4 space-y-6">
@@ -177,15 +212,19 @@ export default function Dashboard({ projects, stats, recentActivity }: Dashboard
                                         </div>
                                     ) : (
                                         recentActivity.map((activity) => (
-                                            <div key={activity.id} className="flex items-start gap-4 p-4 transition-colors hover:bg-muted/40">
-                                                <div className="mt-1 rounded-full bg-primary/10 p-2">
-                                                    <ArrowUpRight className="h-4 w-4 text-primary" />
+                                            <div key={activity.id} className="flex items-start gap-4 p-4 transition-colors hover:bg-muted/40 group">
+                                                <div className="mt-1 rounded-full bg-primary/10 p-2 group-hover:bg-primary/20 transition-colors">
+                                                    {activity.event === 'created' ? (
+                                                        <Plus className="h-4 w-4 text-primary" />
+                                                    ) : (
+                                                        <ArrowUpRight className="h-4 w-4 text-primary" />
+                                                    )}
                                                 </div>
                                                 <div className="flex-1 space-y-1">
                                                     <p className="text-sm font-medium leading-none">
-                                                        {activity.description}
+                                                        {activity.causer?.name || 'Système'} a {activity.event === 'created' ? 'créé' : 'mis à jour'} un {activity.subject_type.toLowerCase()}
                                                     </p>
-                                                    <p className="text-xs text-muted-foreground italic">
+                                                    <p className="text-xs text-muted-foreground italic flex items-center gap-1">
                                                         Il y a {new Date(activity.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                     </p>
                                                 </div>
