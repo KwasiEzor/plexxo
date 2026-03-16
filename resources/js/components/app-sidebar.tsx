@@ -55,7 +55,7 @@ const platformItems: NavItem[] = [
 const libraryItems: NavItem[] = [
     {
         title: 'Mes Ebooks',
-        href: dashboard().url, // Redirect to dashboard for now as it lists projects
+        href: '/ebooks',
         icon: Library,
     },
     {

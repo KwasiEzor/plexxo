@@ -15,13 +15,13 @@ class HandleProjectInvitationAfterRegistration
     {
         $token = Session::get('project_invitation_token');
 
-        if (!$token) {
+        if (! $token) {
             return;
         }
 
         $invitation = ProjectInvitation::where('token', $token)->first();
 
-        if ($invitation && !$invitation->hasExpired()) {
+        if ($invitation && ! $invitation->hasExpired()) {
             // Join the project
             $invitation->project->collaborators()->syncWithoutDetaching([
                 $event->user->id => ['role' => $invitation->role],

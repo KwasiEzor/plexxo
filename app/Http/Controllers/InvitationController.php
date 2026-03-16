@@ -17,6 +17,7 @@ class InvitationController extends Controller
 
         if ($invitation->hasExpired()) {
             $invitation->delete();
+
             return redirect()->route('home')->with('error', 'Cette invitation a expiré.');
         }
 

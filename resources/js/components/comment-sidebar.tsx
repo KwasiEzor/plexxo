@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { MessageSquare, Send, CheckCircle2, Trash2, Plus } from 'lucide-react';
@@ -13,9 +13,11 @@ import { cn } from '@/lib/utils';
 interface CommentSidebarProps {
     chapter: Chapter;
     hideHeader?: boolean;
+    canUpdate?: boolean;
 }
 
-export default function CommentSidebar({ chapter, hideHeader = false }: CommentSidebarProps) {
+export default function CommentSidebar({ chapter, hideHeader = false, canUpdate = false }: CommentSidebarProps) {
+    const { auth } = usePage().props as any;
     const [isAdding, setIsAdding] = useState(false);
     
     const { data, setData, post, processing, reset } = useForm({
@@ -118,14 +120,16 @@ export default function CommentSidebar({ chapter, hideHeader = false }: CommentS
                                 </div>
                                 
                                 <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    {!comment.is_resolved && (
+                                    {!comment.is_resolved && canUpdate && (
                                         <Button variant="ghost" size="icon" className="h-6 w-6 text-green-500" onClick={() => handleResolve(comment.id)}>
                                             <CheckCircle2 className="h-3.5 w-3.5" />
                                         </Button>
                                     )}
-                                    <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => handleDelete(comment.id)}>
-                                        <Trash2 className="h-3.5 w-3.5" />
-                                    </Button>
+                                    {(canUpdate || comment.user_id === auth.user.id) && (
+                                        <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => handleDelete(comment.id)}>
+                                            <Trash2 className="h-3.5 w-3.5" />
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
                             

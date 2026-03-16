@@ -53,6 +53,14 @@ class ProjectPolicy
      */
     public function delete(User $user, Project $project): bool
     {
+        return $user->id === $project->user_id;
+    }
+
+    /**
+     * Determine whether the user can invite collaborators.
+     */
+    public function invite(User $user, Project $project): bool
+    {
         if ($user->id === $project->user_id) {
             return true;
         }
@@ -65,12 +73,18 @@ class ProjectPolicy
     }
 
     /**
-     * Determine whether the user can invite collaborators.
+     * Determine whether the user can remove collaborators.
      */
-    public function invite(User $user, Project $project): bool
+    public function removeCollaborator(User $user, Project $project, User $target): bool
     {
+        // Owner can remove anyone
         if ($user->id === $project->user_id) {
             return true;
+        }
+
+        // Admin can remove others, but not the owner
+        if ($target->id === $project->user_id) {
+            return false;
         }
 
         $collaborator = $project->collaborators()

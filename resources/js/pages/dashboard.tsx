@@ -30,10 +30,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface DashboardProps {
-    projects: {
-        data: Project[];
-        links: any;
-    };
+    projects: Project[];
     stats: {
         total_projects: number;
         total_chapters: number;
@@ -44,7 +41,12 @@ interface DashboardProps {
     pendingInvitations: any[];
 }
 
-export default function Dashboard({ projects, stats, recentActivity, pendingInvitations }: DashboardProps) {
+export default function Dashboard({ 
+    projects = [], 
+    stats = { total_projects: 0, total_chapters: 0, total_words: 0, ai_tokens_used: 0 }, 
+    recentActivity = [], 
+    pendingInvitations = [] 
+}: DashboardProps) {
     const { auth } = usePage().props as any;
 
     useEcho(auth.user ? `user.${auth.user.id}` : null, 'ProjectOutlineGenerated', () => {
@@ -109,7 +111,7 @@ export default function Dashboard({ projects, stats, recentActivity, pendingInvi
                             <Sparkles className="h-4 w-4 text-emerald-500" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{(stats.total_words / 1000).toFixed(1)}k</div>
+                            <div className="text-2xl font-bold">{((stats?.total_words || 0) / 1000).toFixed(1)}k</div>
                             <p className="text-xs text-muted-foreground">+12k mots cette session</p>
                             <div className="absolute -bottom-2 -right-2 opacity-5">
                                 <Sparkles className="h-24 w-24" />
@@ -122,7 +124,7 @@ export default function Dashboard({ projects, stats, recentActivity, pendingInvi
                             <Zap className="h-4 w-4 text-orange-500" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{(stats.ai_tokens_used / 1000).toFixed(1)}k</div>
+                            <div className="text-2xl font-bold">{(stats?.ai_tokens_used || 0) / 1000}k</div>
                             <p className="text-xs text-muted-foreground">Plan: Premium AI</p>
                             <div className="absolute -bottom-2 -right-2 opacity-5">
                                 <Zap className="h-24 w-24" />
@@ -172,12 +174,12 @@ export default function Dashboard({ projects, stats, recentActivity, pendingInvi
                                 <BookOpen className="h-5 w-5 text-primary" />
                                 <h3 className="text-xl font-semibold">Projets Récents</h3>
                             </div>
-                            <Link href={dashboard().url} className="text-sm font-medium text-primary hover:underline flex items-center">
+                            <Link href="/ebooks" className="text-sm font-medium text-primary hover:underline flex items-center">
                                 Voir tout <ChevronRight className="ml-1 h-4 w-4" />
                             </Link>
                         </div>
 
-                        {projects.data.length === 0 ? (
+                        {projects.length === 0 ? (
                             <Card className="border-dashed flex min-h-[300px] flex-col items-center justify-center p-8 text-center bg-muted/20">
                                 <div className="rounded-full bg-muted p-4 mb-4">
                                     <Plus className="h-8 w-8 text-muted-foreground" />
@@ -190,7 +192,7 @@ export default function Dashboard({ projects, stats, recentActivity, pendingInvi
                             </Card>
                         ) : (
                             <div className="grid gap-6 sm:grid-cols-2">
-                                {projects.data.map((project) => (
+                                {projects.map((project) => (
                                     <ProjectCard key={project.id} project={project} />
                                 ))}
                             </div>

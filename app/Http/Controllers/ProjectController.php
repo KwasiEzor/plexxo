@@ -7,17 +7,17 @@ use App\Enums\UserRole;
 use App\Http\Requests\StoreProjectRequest;
 use App\Jobs\GenerateProjectOutline;
 use App\Models\Chapter;
-use App\Models\Project;
-use App\Models\Source;
 use App\Models\Comment;
+use App\Models\Project;
+use App\Models\ProjectInvitation;
+use App\Models\Source;
 use App\Models\User;
+use App\Notifications\ProjectInvitationNotification;
 use App\Services\AI\ImageGenerator;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use App\Models\ProjectInvitation;
-use App\Notifications\ProjectInvitationNotification;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Activitylog\Models\Activity;
@@ -27,7 +27,7 @@ class ProjectController extends Controller
     /**
      * Display a listing of the projects.
      */
-    public function index(Request $request): Response
+    public function dashboard(Request $request): Response
     {
         $user = $request->user();
 
@@ -37,7 +37,8 @@ class ProjectController extends Controller
             ->whereIn('id', $projectIds)
             ->withCount('chapters')
             ->latest()
-            ->paginate(6);
+            ->limit(4)
+            ->get();
 
         $stats = [
             'total_projects' => $projectIds->count(),
@@ -77,6 +78,24 @@ class ProjectController extends Controller
             'stats' => $stats,
             'recentActivity' => $recentActivity,
             'pendingInvitations' => $pendingInvitations,
+        ]);
+    }
+
+    /**
+     * Display a listing of projects.
+     */
+    public function index(Request $request): Response
+    {
+        $user = $request->user();
+
+        $projects = Project::query()
+            ->whereIn('id', $user->projects()->pluck('projects.id'))
+            ->withCount('chapters')
+            ->latest()
+            ->paginate(12);
+
+        return Inertia::render('projects/index', [
+            'projects' => $projects,
         ]);
     }
 
@@ -135,9 +154,17 @@ class ProjectController extends Controller
             'project' => $project->load([
                 'chapters' => fn ($q) => $q->with(['comments' => fn ($cq) => $cq->with('user')->latest()]),
                 'sources',
+                'collaborators',
             ])->append('total_word_count'),
             'cover_url' => $project->getFirstMediaUrl('cover'),
             'activities' => $activities,
+            'auth' => [
+                'can' => [
+                    'update_project' => auth()->user()->can('update', $project),
+                    'delete_project' => auth()->user()->can('delete', $project),
+                    'invite_collaborators' => auth()->user()->can('invite', $project),
+                ],
+            ],
         ]);
     }
 
@@ -232,5 +259,29 @@ class ProjectController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Erreur lors de la génération: '.$e->getMessage());
         }
+    }
+
+    /**
+     * Remove the specified project from storage.
+     */
+    public function destroy(Project $project)
+    {
+        $this->authorize('delete', $project);
+
+        $project->delete();
+
+        return redirect()->route('dashboard')->with('success', 'Projet supprimé.');
+    }
+
+    /**
+     * Remove a collaborator from the project.
+     */
+    public function removeCollaborator(Project $project, User $user)
+    {
+        $this->authorize('removeCollaborator', [$project, $user]);
+
+        $project->collaborators()->detach($user->id);
+
+        return back()->with('success', 'Collaborateur retiré.');
     }
 }

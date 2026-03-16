@@ -118,7 +118,7 @@ test('newly registered user automatically joins the project if they have a token
     ]);
 
     $response->assertRedirect(route('dashboard'));
-    
+
     $newUser = User::where('email', $email)->first();
     $this->assertAuthenticatedAs($newUser);
     $this->assertTrue($project->collaborators->contains($newUser));

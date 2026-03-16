@@ -3,7 +3,9 @@
 use App\Http\Controllers\AssistantController;
 use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\ChapterController;
+use App\Http\Controllers\CollaborationController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MyTemplatesController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectExportController;
@@ -22,9 +24,10 @@ Route::controller(SocialLoginController::class)->prefix('auth/{provider}')->name
 });
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
-    Route::get('dashboard', [ProjectController::class, 'index'])->name('dashboard');
+    Route::get('dashboard', [ProjectController::class, 'dashboard'])->name('dashboard');
+    Route::get('ebooks', [ProjectController::class, 'index'])->name('projects.index');
     Route::get('assistant', [AssistantController::class, 'index'])->name('assistant');
-    Route::get('collaborations', [App\Http\Controllers\CollaborationController::class, 'index'])->name('collaborations.index');
+    Route::get('collaborations', [CollaborationController::class, 'index'])->name('collaborations.index');
 
     Route::get('my-templates', [MyTemplatesController::class, 'index'])->name('my-templates.index');
 
@@ -47,9 +50,11 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         Route::controller(ProjectController::class)->group(function () {
             Route::post('/', 'store')->name('store');
             Route::get('{project:slug}', 'show')->name('show');
+            Route::delete('{project:slug}', 'destroy')->name('destroy');
             Route::post('{project:slug}/cover', 'updateCover')->name('update-cover');
             Route::post('{project:slug}/generate-cover', 'generateCover')->name('generate-cover');
             Route::post('{project:slug}/invite', 'invite')->name('invite');
+            Route::delete('{project:slug}/collaborators/{user}', 'removeCollaborator')->name('collaborators.remove');
         });
 
         Route::controller(ProjectExportController::class)->prefix('{project:slug}')->group(function () {
@@ -77,8 +82,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 
     Route::delete('sources/{source}', [SourceController::class, 'destroy'])->name('sources.destroy');
 });
-
-use App\Http\Controllers\InvitationController;
 
 Route::get('invitations/{token}/accept', [InvitationController::class, 'accept'])->name('invitations.accept');
 

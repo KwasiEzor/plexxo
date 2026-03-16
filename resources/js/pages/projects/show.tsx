@@ -1,4 +1,4 @@
-import { Head, router } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { useEcho, useEchoPresence } from '@laravel/echo-react';
 import { 
     Book, 
@@ -19,6 +19,7 @@ import { pdf as projectsExportPdf } from '@/actions/App/Http/Controllers/Project
 import { generate, revise, translate } from '@/routes/chapters';
 import { exportHtml, exportEpub, publish as projectsPublish } from '@/routes/projects';
 import CommentSidebar from '@/components/comment-sidebar';
+import CollaboratorManager from '@/components/collaborator-manager';
 import CoverManager from '@/components/cover-manager';
 import ExportSettingsModal from '@/components/export-settings-modal';
 import PresenceAvatars from '@/components/presence-avatars';
@@ -41,6 +42,14 @@ interface ProjectShowProps {
     project: Project;
     cover_url?: string;
     activities: any[];
+    auth: {
+        user: any;
+        can: {
+            update_project: boolean;
+            delete_project: boolean;
+            invite_collaborators: boolean;
+        };
+    };
 }
 
 interface PresenceUser {
@@ -48,7 +57,7 @@ interface PresenceUser {
     name: string;
 }
 
-export default function ProjectShow({ project, cover_url, activities }: ProjectShowProps) {
+export default function ProjectShow({ project, cover_url, activities, auth }: ProjectShowProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: '/dashboard' },
         { title: project.title, href: projectsShow({ project: project.slug }) },
@@ -137,7 +146,7 @@ export default function ProjectShow({ project, cover_url, activities }: ProjectS
         
         // Whisper typing
         const channel = presenceChannel();
-        if (channel && activeChapter) {
+        if (channel && activeChapter && auth.can.update_project) {
             channel.whisper('typing', {
                 id: (usePage().props as any).auth.user.id,
                 name: (usePage().props as any).auth.user.name,
@@ -158,9 +167,9 @@ export default function ProjectShow({ project, cover_url, activities }: ProjectS
     });
 
     const handleSave = () => {
-        if (!activeChapter) {
-return;
-}
+        if (!activeChapter || !auth.can.update_project) {
+            return;
+        }
 
         setIsSaving(true);
         
@@ -173,9 +182,9 @@ return;
     };
 
     const handleGenerate = () => {
-        if (!activeChapter) {
-return;
-}
+        if (!activeChapter || !auth.can.update_project) {
+            return;
+        }
         
         router.post(generate({ chapter: activeChapter.id }).url, {}, {
             preserveScroll: true,
@@ -186,9 +195,9 @@ return;
     };
 
     const handleRevise = () => {
-        if (!activeChapter) {
-return;
-}
+        if (!activeChapter || !auth.can.update_project) {
+            return;
+        }
         
         router.post(revise({ chapter: activeChapter.id }).url, {}, {
             preserveScroll: true
@@ -196,9 +205,9 @@ return;
     };
 
     const handleTranslate = (language: string) => {
-        if (!activeChapter) {
-return;
-}
+        if (!activeChapter || !auth.can.update_project) {
+            return;
+        }
         
         router.post(translate({ chapter: activeChapter.id }).url, {
             language: language
@@ -220,6 +229,8 @@ return;
     };
 
     const handlePublish = () => {
+        if (!auth.can.update_project) return;
+
         if (confirm('Voulez-vous publier ce projet sur Gumroad ?')) {
             router.post(projectsPublish({ project: project.slug }).url);
         }
@@ -243,9 +254,11 @@ return;
                         </h2>
                         <div className="flex items-center">
                             <StyleGuideModal project={project} />
-                            <Button variant="ghost" size="icon" title="Paramètres">
-                                <Settings className="h-4 w-4" />
-                            </Button>
+                            {auth.can.update_project && (
+                                <Button variant="ghost" size="icon" title="Paramètres">
+                                    <Settings className="h-4 w-4" />
+                                </Button>
+                            )}
                         </div>
                     </div>
                     
@@ -287,22 +300,26 @@ return;
                         <SourceList project={project} />
                         
                         <div className="space-y-4">
-                            <CoverManager project={project} coverUrl={cover_url} />
+                            {auth.can.update_project && (
+                                <CoverManager project={project} coverUrl={cover_url} />
+                            )}
                             
                             <div className="space-y-2">
-                                <Button 
-                                    className="w-full justify-start" 
-                                    variant="outline" 
-                                    onClick={handleGenerate}
-                                    disabled={!activeChapter || isGenerating}
-                                >
-                                    {isGenerating ? (
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    ) : (
-                                        <Sparkles className="mr-2 h-4 w-4 text-primary" />
-                                    )}
-                                    {isGenerating ? 'IA en cours...' : "Rédiger ce chapitre"}
-                                </Button>
+                                {auth.can.update_project && (
+                                    <Button 
+                                        className="w-full justify-start" 
+                                        variant="outline" 
+                                        onClick={handleGenerate}
+                                        disabled={!activeChapter || isGenerating}
+                                    >
+                                        {isGenerating ? (
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        ) : (
+                                            <Sparkles className="mr-2 h-4 w-4 text-primary" />
+                                        )}
+                                        {isGenerating ? 'IA en cours...' : "Rédiger ce chapitre"}
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -340,65 +357,72 @@ return;
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-2">
+                                    <CollaboratorManager project={project} canInvite={auth.can.invite_collaborators} />
                                     <PresenceAvatars users={onlineUsers} />
                                     
                                     <ExportSettingsModal project={project} />
 
-                                    <Button 
-                                        variant="outline" 
-                                        size="sm" 
-                                        onClick={handleRevise} 
-                                        disabled={!content || activeChapter.status === 'revising'}
-                                        title="Lancer l'Agent Réviseur pour améliorer le style et corriger les fautes"
-                                    >
-                                        {activeChapter.status === 'revising' ? (
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        ) : (
-                                            <UserCheck className="mr-2 h-4 w-4 text-blue-500" />
-                                        )}
-                                        {activeChapter.status === 'revising' ? 'Révision...' : 'Réviser (IA)'}
-                                    </Button>
+                                    {auth.can.update_project && (
+                                        <Button 
+                                            variant="outline" 
+                                            size="sm" 
+                                            onClick={handleRevise} 
+                                            disabled={!content || activeChapter.status === 'revising'}
+                                            title="Lancer l'Agent Réviseur pour améliorer le style et corriger les fautes"
+                                        >
+                                            {activeChapter.status === 'revising' ? (
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            ) : (
+                                                <UserCheck className="mr-2 h-4 w-4 text-blue-500" />
+                                            )}
+                                            {activeChapter.status === 'revising' ? 'Révision...' : 'Réviser (IA)'}
+                                        </Button>
+                                    )}
 
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button 
-                                                variant="outline" 
-                                                size="sm" 
-                                                disabled={!content || activeChapter.status === 'translating'}
-                                                title="Traduire le contenu dans une autre langue"
-                                            >
-                                                {activeChapter.status === 'translating' ? (
-                                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                ) : (
-                                                    <Languages className="mr-2 h-4 w-4 text-green-500" />
-                                                )}
-                                                {activeChapter.status === 'translating' ? 'Traduction...' : 'Traduire'}
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuItem onClick={() => handleTranslate('Anglais')}>
-                                                Anglais
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => handleTranslate('Espagnol')}>
-                                                Espagnol
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => handleTranslate('Allemand')}>
-                                                Allemand
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => handleTranslate('Italien')}>
-                                                Italien
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    {auth.can.update_project && (
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button 
+                                                    variant="outline" 
+                                                    size="sm" 
+                                                    disabled={!content || activeChapter.status === 'translating'}
+                                                    title="Traduire le contenu dans une autre langue"
+                                                >
+                                                    {activeChapter.status === 'translating' ? (
+                                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                    ) : (
+                                                        <Languages className="mr-2 h-4 w-4 text-green-500" />
+                                                    )}
+                                                    {activeChapter.status === 'translating' ? 'Traduction...' : 'Traduire'}
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem onClick={() => handleTranslate('Anglais')}>
+                                                    Anglais
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => handleTranslate('Espagnol')}>
+                                                    Espagnol
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => handleTranslate('Allemand')}>
+                                                    Allemand
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => handleTranslate('Italien')}>
+                                                    Italien
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    )}
 
-                                    <Button variant="outline" size="sm" onClick={handleSave} disabled={isSaving}>
-                                        {isSaving ? (
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        ) : (
-                                            <Save className="mr-2 h-4 w-4" />
-                                        )}
-                                        Sauvegarder
-                                    </Button>
+                                    {auth.can.update_project && (
+                                        <Button variant="outline" size="sm" onClick={handleSave} disabled={isSaving}>
+                                            {isSaving ? (
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            ) : (
+                                                <Save className="mr-2 h-4 w-4" />
+                                            )}
+                                            Sauvegarder
+                                        </Button>
+                                    )}
                                     <Button size="sm" onClick={handleExport}>
                                         <Download className="mr-2 h-4 w-4" />
                                         PDF
@@ -414,26 +438,29 @@ return;
                                         EPUB
                                     </Button>
 
-                                    <Button size="sm" variant="secondary" onClick={handlePublish}>
-                                        <ExternalLink className="mr-2 h-4 w-4" />
-                                        Publier (Gumroad)
-                                    </Button>
+                                    {auth.can.update_project && (
+                                        <Button size="sm" variant="secondary" onClick={handlePublish}>
+                                            <ExternalLink className="mr-2 h-4 w-4" />
+                                            Publier (Gumroad)
+                                        </Button>
+                                    )}
                                 </div>
-                            </header>
-                            
-                            <div className="flex-1 p-6 overflow-y-auto flex flex-col items-center bg-muted/30">
-                                <div className="w-full max-w-3xl">
-                                    <ProjectStats project={project} />
-                                    <div className="w-full bg-background shadow-sm border rounded-lg p-10 min-h-[1000px]">
-                                        <textarea
-                                            value={content}
-                                            onChange={handleContentChange}
-                                            placeholder="Commencez à écrire ici ou laissez l'IA vous aider..."
-                                            className="w-full h-full min-h-[800px] resize-none border-none focus:ring-0 text-lg leading-relaxed font-serif outline-none"
-                                        />
+                                </header>
+                                
+                                <div className="flex-1 p-6 overflow-y-auto flex flex-col items-center bg-muted/30">
+                                    <div className="w-full max-w-3xl">
+                                        <ProjectStats project={project} />
+                                        <div className="w-full bg-background shadow-sm border rounded-lg p-10 min-h-[1000px]">
+                                            <textarea
+                                                value={content}
+                                                onChange={handleContentChange}
+                                                placeholder={auth.can.update_project ? "Commencez à écrire ici ou laissez l'IA vous aider..." : "Contenu en lecture seule..."}
+                                                className="w-full h-full min-h-[800px] resize-none border-none focus:ring-0 text-lg leading-relaxed font-serif outline-none"
+                                                readOnly={!auth.can.update_project}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             </div>
                             
                             <aside className="w-80 border-l bg-sidebar flex flex-col hidden xl:flex overflow-hidden">
@@ -461,7 +488,7 @@ return;
                                 </div>
                                 <div className="flex-1 overflow-hidden">
                                     {sidebarTab === 'comments' ? (
-                                        <CommentSidebar chapter={activeChapter} hideHeader={true} />
+                                        <CommentSidebar chapter={activeChapter} hideHeader={true} canUpdate={auth.can.update_project} />
                                     ) : (
                                         <ProjectActivityFeed activities={activities} />
                                     )}

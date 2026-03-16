@@ -2,16 +2,15 @@
 
 namespace App\Providers;
 
+use App\Listeners\HandleProjectInvitationAfterRegistration;
 use Carbon\CarbonImmutable;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
-
-use App\Listeners\HandleProjectInvitationAfterRegistration;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Event;
 
 class AppServiceProvider extends ServiceProvider
 {

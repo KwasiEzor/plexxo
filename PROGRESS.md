@@ -22,6 +22,7 @@ Plateforme d'édition collaborative augmentée par l'IA (Ebook Forge).
 - [x] Gestion des rôles (Admin, Éditeur, Lecteur) via ProjectPolicy.
 - [x] Permissions granulaires sur les projets (TDD validé).
 - [x] Indicateurs de présence en temps réel (Presence Channels).
+- [x] Interface de gestion des collaborateurs (Invite/Remove).
 
 ## 🧠 Phase 3 : IA Avancée (Terminée)
 - [x] RAG (Retrieval-Augmented Generation) avec sources PDF/Docx.
@@ -52,4 +53,4 @@ Plateforme d'édition collaborative augmentée par l'IA (Ebook Forge).
 - [ ] Marketplace de templates de mise en page.
 
 ---
-*Dernière mise à jour : 14 Mars 2026*
+*Dernière mise à jour : 16 Mars 2026*

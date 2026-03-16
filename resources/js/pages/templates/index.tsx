@@ -207,7 +207,7 @@ export default function Templates({ templates, filters }: TemplatesProps) {
                             className="rounded-xl border-border/50 bg-card/50"
                             asChild
                         >
-                            <Link href={templates.prev_page_url || '#'}>
+                            <Link href={templates.prev_page_url || '#'} preserveState preserveScroll>
                                 <ChevronLeft className="h-4 w-4" />
                             </Link>
                         </Button>
@@ -223,7 +223,7 @@ export default function Templates({ templates, filters }: TemplatesProps) {
                                     }`}
                                     asChild
                                 >
-                                    <Link href={link.url || '#'}>
+                                    <Link href={link.url || '#'} preserveState preserveScroll>
                                         {link.label}
                                     </Link>
                                 </Button>
@@ -237,7 +237,7 @@ export default function Templates({ templates, filters }: TemplatesProps) {
                             className="rounded-xl border-border/50 bg-card/50"
                             asChild
                         >
-                            <Link href={templates.next_page_url || '#'}>
+                            <Link href={templates.next_page_url || '#'} preserveState preserveScroll>
                                 <ChevronRight className="h-4 w-4" />
                             </Link>
                         </Button>
