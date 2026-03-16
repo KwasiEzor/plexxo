@@ -27,7 +27,7 @@ export default function TemplateShow({ template }: TemplateShowProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Modèles',
-            href: templatesRoute(),
+            href: templatesRoute().url,
         },
         {
             title: template.name,
@@ -42,7 +42,7 @@ export default function TemplateShow({ template }: TemplateShowProps) {
             <div className="max-w-6xl mx-auto p-4 md:p-8 pb-20">
                 {/* Back Button */}
                 <Button variant="ghost" size="sm" className="mb-8 rounded-xl text-muted-foreground hover:text-foreground" asChild>
-                    <Link href={templatesRoute()}>
+                    <Link href={templatesRoute().url}>
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Retour aux modèles
                     </Link>

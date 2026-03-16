@@ -2,6 +2,7 @@ import { useForm, router } from '@inertiajs/react';
 import { FileText, Plus, Trash2, Loader2, FileCode, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { store, destroy } from '@/routes/sources';
 
 interface Source {
     id: number;
@@ -28,7 +29,7 @@ export default function SourceList({ project }: SourceListProps) {
 
     const handleUpload = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('sources.store', { project: project.slug }), {
+        post(store({ project: project.slug }).url, {
             onSuccess: () => {
                 reset();
                 setIsUploading(false);
@@ -38,7 +39,7 @@ export default function SourceList({ project }: SourceListProps) {
 
     const handleDelete = (id: number) => {
         if (confirm('Supprimer ce document ?')) {
-            router.delete(route('sources.destroy', { source: id }));
+            router.delete(destroy({ source: id }).url);
         }
     };
 

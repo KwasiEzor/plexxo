@@ -61,7 +61,7 @@ export default function MyTemplates({ templates, filters, stats }: MyTemplatesPr
     const debouncedSearch = useDebounce(search, 300);
 
     const updateFilters = useCallback(() => {
-        router.get(myTemplatesRoute(), {
+        router.get(myTemplatesRoute().url, {
             status: status !== 'all' ? status : undefined,
             search: debouncedSearch || undefined,
         }, {
@@ -78,20 +78,20 @@ export default function MyTemplates({ templates, filters, stats }: MyTemplatesPr
     }, [status]);
 
     const handleToggleFavorite = (id: number) => {
-        router.post(templatesFavorite({ template: id }), {}, {
+        router.post(templatesFavorite({ template: id }).url, {}, {
             preserveScroll: true,
         });
     };
 
     const handleArchive = (id: number) => {
-        router.post(templatesArchive({ template: id }), {}, {
+        router.post(templatesArchive({ template: id }).url, {}, {
             preserveScroll: true,
         });
     };
 
     const handleDelete = (id: number) => {
         if (confirm('Êtes-vous sûr de vouloir supprimer ce modèle ?')) {
-            router.delete(templatesDestroy({ template: id }), {
+            router.delete(templatesDestroy({ template: id }).url, {
                 preserveScroll: true,
             });
         }
@@ -123,7 +123,7 @@ export default function MyTemplates({ templates, filters, stats }: MyTemplatesPr
                     </div>
                     
                     <Button asChild className="rounded-2xl h-14 px-8 font-black text-lg shadow-xl shadow-primary/20 hover:scale-105 transition-all bg-gradient-to-r from-primary to-blue-600">
-                        <Link href={templatesLibraryRoute()}>
+                        <Link href={templatesLibraryRoute().url}>
                             <Plus className="mr-2 h-6 w-6" />
                             Nouveau Modèle
                         </Link>
@@ -262,7 +262,7 @@ export default function MyTemplates({ templates, filters, stats }: MyTemplatesPr
                                         variant="outline"
                                         className="w-full rounded-xl font-bold group-hover:border-primary/50 transition-all duration-300"
                                     >
-                                        <Link href={templatesShow({ template: template.slug })}>
+                                        <Link href={templatesShow({ template: template.slug }).url}>
                                             Ouvrir le modèle
                                             <ArrowRight className="ml-2 h-4 w-4" />
                                         </Link>
@@ -281,7 +281,7 @@ export default function MyTemplates({ templates, filters, stats }: MyTemplatesPr
                             Explorez nos modèles officiels pour commencer ou créez le vôtre de toutes pièces.
                         </p>
                         <Button asChild className="rounded-xl px-8 h-12 font-bold shadow-lg shadow-primary/10">
-                            <Link href={templatesLibraryRoute()}>
+                            <Link href={templatesLibraryRoute().url}>
                                 Parcourir les modèles
                             </Link>
                         </Button>

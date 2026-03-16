@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { update } from '@/routes/projects';
 import type { Project } from '@/types/project';
 
 interface ExportSettingsModalProps {
@@ -33,7 +34,7 @@ export default function ExportSettingsModal({ project }: ExportSettingsModalProp
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(route('projects.update', { project: project.slug }), {
+        put(update({ project: project.slug }).url, {
             onSuccess: () => setOpen(false),
         });
     };

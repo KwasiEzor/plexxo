@@ -33,7 +33,7 @@ export default function Templates({ templates, filters }: TemplatesProps) {
     const categories = ['all', 'Fiction', 'Business', 'Non-Fiction', 'Fantasy', 'Thriller'];
 
     const updateFilters = useCallback(() => {
-        router.get(templatesRoute(), {
+        router.get(templatesRoute().url, {
             search: debouncedSearch || undefined,
             category: category !== 'all' ? category : undefined,
         }, {
@@ -44,7 +44,7 @@ export default function Templates({ templates, filters }: TemplatesProps) {
     }, [debouncedSearch, category]);
 
     const handleToggleFavorite = (id: number) => {
-        router.post(templatesFavorite({ template: id }), {}, {
+        router.post(templatesFavorite({ template: id }).url, {}, {
             preserveScroll: true,
         });
     };
@@ -169,7 +169,7 @@ export default function Templates({ templates, filters }: TemplatesProps) {
                                         asChild
                                         className="w-full rounded-xl font-bold group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-300 bg-gradient-to-r from-primary to-blue-600 hover:opacity-90"
                                     >
-                                        <Link href={templatesShow({ template: template.slug })}>
+                                        <Link href={templatesShow({ template: template.slug }).url}>
                                             Détails & Utiliser
                                             <ArrowRight className="ml-2 h-4 w-4" />
                                         </Link>

@@ -30,6 +30,7 @@ import {
     SidebarGroupLabel,
 } from '@/components/ui/sidebar';
 import { dashboard, assistant } from '@/routes';
+import { index as collaborations } from '@/routes/collaborations';
 import { index as templatesLibrary } from '@/routes/templates';
 import { index as myTemplates } from '@/routes/my-templates';
 import { edit as appearance } from '@/routes/appearance';
@@ -59,7 +60,7 @@ const libraryItems: NavItem[] = [
     },
     {
         title: 'Collaborations',
-        href: route('collaborations.index'),
+        href: collaborations().url,
         icon: Users,
     },
     {

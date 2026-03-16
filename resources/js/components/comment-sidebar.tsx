@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { store, resolve, destroy } from '@/routes/comments';
 import type { Chapter } from '@/types/project';
 import { cn } from '@/lib/utils';
 
@@ -23,7 +24,7 @@ export default function CommentSidebar({ chapter, hideHeader = false }: CommentS
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('comments.store', { chapter: chapter.id }), {
+        post(store({ chapter: chapter.id }).url, {
             onSuccess: () => {
                 reset();
                 setIsAdding(false);
@@ -32,7 +33,7 @@ export default function CommentSidebar({ chapter, hideHeader = false }: CommentS
     };
 
     const handleResolve = (id: number) => {
-        post(route('comments.resolve', { comment: id }), {
+        post(resolve({ comment: id }).url, {
             _method: 'patch',
             preserveScroll: true,
         } as any);
@@ -40,7 +41,7 @@ export default function CommentSidebar({ chapter, hideHeader = false }: CommentS
 
     const handleDelete = (id: number) => {
         if (confirm('Supprimer ce commentaire ?')) {
-            post(route('comments.destroy', { comment: id }), {
+            post(destroy({ comment: id }).url, {
                 _method: 'delete',
                 preserveScroll: true,
             } as any);

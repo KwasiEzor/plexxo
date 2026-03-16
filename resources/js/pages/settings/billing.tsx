@@ -11,7 +11,7 @@ import type { BreadcrumbItem } from '@/types';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Billing settings',
-        href: editBilling(),
+        href: editBilling().url,
     },
 ];
 

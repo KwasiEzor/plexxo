@@ -14,6 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import ProjectCard from '@/components/project-card';
+import { accept as invitationsAccept } from '@/routes/invitations';
 import type { BreadcrumbItem, Project } from '@/types';
 
 interface CollaborationPageProps {
@@ -79,7 +80,7 @@ export default function CollaborationIndex({ collaborations, pendingInvitations 
                                             </div>
                                         </div>
                                         <Button asChild>
-                                            <Link href={route('invitations.accept', { token: invitation.token })}>
+                                            <Link href={invitationsAccept({ token: invitation.token }).url}>
                                                 Accepter l'invitation
                                             </Link>
                                         </Button>

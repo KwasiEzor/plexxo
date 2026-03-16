@@ -3,6 +3,7 @@ import { Image as ImageIcon, Loader2, Upload, Sparkles } from 'lucide-react';
 import { useRef } from 'react';
 import { updateCover as projectsUpdateCover } from '@/actions/App/Http/Controllers/ProjectController';
 import { Button } from '@/components/ui/button';
+import { generateCover } from '@/routes/projects';
 import type { Project } from '@/types';
 
 interface CoverManagerProps {
@@ -33,7 +34,7 @@ export default function CoverManager({ project, coverUrl }: CoverManagerProps) {
     };
 
     const handleGenerate = () => {
-        router.post(route('projects.generate-cover', { project: project.slug }), {}, {
+        router.post(generateCover({ project: project.slug }).url, {}, {
             preserveScroll: true
         });
     };

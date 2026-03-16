@@ -16,6 +16,8 @@ import { useState, useEffect } from 'react';
 import { update as chaptersUpdate } from '@/actions/App/Http/Controllers/ChapterController';
 import { show as projectsShow } from '@/actions/App/Http/Controllers/ProjectController';
 import { pdf as projectsExportPdf } from '@/actions/App/Http/Controllers/ProjectExportController';
+import { generate, revise, translate } from '@/routes/chapters';
+import { exportHtml, exportEpub, publish as projectsPublish } from '@/routes/projects';
 import CommentSidebar from '@/components/comment-sidebar';
 import CoverManager from '@/components/cover-manager';
 import ExportSettingsModal from '@/components/export-settings-modal';
@@ -175,7 +177,7 @@ return;
 return;
 }
         
-        router.post(route('chapters.generate', { chapter: activeChapter.id }), {}, {
+        router.post(generate({ chapter: activeChapter.id }).url, {}, {
             preserveScroll: true,
             onSuccess: () => {
                 // The actual content will come via Echo
@@ -188,7 +190,7 @@ return;
 return;
 }
         
-        router.post(route('chapters.revise', { chapter: activeChapter.id }), {}, {
+        router.post(revise({ chapter: activeChapter.id }).url, {}, {
             preserveScroll: true
         });
     };
@@ -198,7 +200,7 @@ return;
 return;
 }
         
-        router.post(route('chapters.translate', { chapter: activeChapter.id }), {
+        router.post(translate({ chapter: activeChapter.id }).url, {
             language: language
         }, {
             preserveScroll: true
@@ -210,16 +212,16 @@ return;
     };
 
     const handleExportHtml = () => {
-        window.open(route('projects.export-html', { project: project.slug }), '_blank');
+        window.open(exportHtml({ project: project.slug }).url, '_blank');
     };
 
     const handleExportEpub = () => {
-        window.open(route('projects.export-epub', { project: project.slug }), '_blank');
+        window.open(exportEpub({ project: project.slug }).url, '_blank');
     };
 
     const handlePublish = () => {
         if (confirm('Voulez-vous publier ce projet sur Gumroad ?')) {
-            router.post(route('projects.publish', { project: project.slug }));
+            router.post(projectsPublish({ project: project.slug }).url);
         }
     };
 

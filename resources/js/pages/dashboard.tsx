@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
+import { accept as invitationsAccept } from '@/routes/invitations';
 import type { BreadcrumbItem, Project } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -151,7 +152,7 @@ export default function Dashboard({ projects, stats, recentActivity, pendingInvi
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Link 
-                                            href={route('invitations.accept', { token: invitation.token })}
+                                            href={invitationsAccept({ token: invitation.token }).url}
                                             className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90"
                                         >
                                             Accepter
@@ -171,7 +172,7 @@ export default function Dashboard({ projects, stats, recentActivity, pendingInvi
                                 <BookOpen className="h-5 w-5 text-primary" />
                                 <h3 className="text-xl font-semibold">Projets Récents</h3>
                             </div>
-                            <Link href={dashboard()} className="text-sm font-medium text-primary hover:underline flex items-center">
+                            <Link href={dashboard().url} className="text-sm font-medium text-primary hover:underline flex items-center">
                                 Voir tout <ChevronRight className="ml-1 h-4 w-4" />
                             </Link>
                         </div>

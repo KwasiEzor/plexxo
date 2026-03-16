@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { Button } from '@/components/ui/button';
-import { dashboard } from '@/routes';
+import { dashboard, login, register } from '@/routes';
 
 export default function Welcome({ auth }: { auth: { user: any } }) {
     return (
@@ -37,9 +37,9 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
                             </Button>
                         ) : (
                             <>
-                                <Link href="/login" className="text-sm font-medium hover:text-primary transition-colors">Connexion</Link>
+                                <Link href={login().url} className="text-sm font-medium hover:text-primary transition-colors">Connexion</Link>
                                 <Button asChild className="rounded-full bg-gradient-to-r from-primary to-blue-600 hover:opacity-90 shadow-lg shadow-primary/20">
-                                    <Link href="/register">Essai gratuit <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                                    <Link href={register().url}>Essai gratuit <ArrowRight className="ml-2 h-4 w-4" /></Link>
                                 </Button>
                             </>
                         )}
@@ -75,7 +75,7 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
                                 </Button>
                             ) : (
                                 <Button size="lg" className="h-14 px-8 rounded-2xl bg-primary hover:opacity-90 text-lg shadow-xl shadow-primary/30 w-full sm:w-auto" asChild>
-                                    <Link href="/register">Commencer la forge <ChevronRight className="ml-2 h-5 w-5" /></Link>
+                                    <Link href={register().url}>Commencer la forge <ChevronRight className="ml-2 h-5 w-5" /></Link>
                                 </Button>
                             )}
                             <Button variant="outline" size="lg" className="h-14 px-8 rounded-2xl text-lg border-2 w-full sm:w-auto">
@@ -241,7 +241,7 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
                                 </li>
                             </ul>
                             <Button variant="outline" className="w-full rounded-xl h-12" asChild>
-                                <Link href="/register">Commencer</Link>
+                                <Link href={register().url}>Commencer</Link>
                             </Button>
                         </div>
 
@@ -281,7 +281,7 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
                                 </li>
                             </ul>
                             <Button className="w-full rounded-xl h-12 bg-primary hover:opacity-90 shadow-lg shadow-primary/20" asChild>
-                                <Link href="/register">Devenir Premium</Link>
+                                <Link href={register().url}>Devenir Premium</Link>
                             </Button>
                         </div>
                     </div>
@@ -300,7 +300,7 @@ export default function Welcome({ auth }: { auth: { user: any } }) {
                             <p className="text-primary-foreground/80 text-lg md:text-xl max-w-2xl mx-auto">Rejoignez des milliers de créateurs qui utilisent Plexxo pour transformer leur expertise en actifs numériques lucratifs.</p>
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                                 <Button size="lg" variant="secondary" className="h-14 px-10 rounded-2xl text-lg font-bold w-full sm:w-auto text-primary" asChild>
-                                    <Link href="/register">Essayer Gratuitement</Link>
+                                    <Link href={register().url}>Essayer Gratuitement</Link>
                                 </Button>
                                 <p className="text-sm font-medium text-primary-foreground/60">Aucune carte de crédit requise.</p>
                             </div>
