@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AssistantController;
 use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\ChapterController;
+use App\Http\Controllers\ChapterVersionController;
 use App\Http\Controllers\CollaborationController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\InvitationController;
@@ -24,6 +26,13 @@ Route::controller(SocialLoginController::class)->prefix('auth/{provider}')->name
 });
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
+    // Admin Routes
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/', [AdminController::class, 'index'])->name('index');
+        Route::post('users/{user}/toggle-admin', [AdminController::class, 'toggleAdmin'])->name('users.toggle-admin');
+        Route::delete('users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+    });
+
     Route::get('dashboard', [ProjectController::class, 'dashboard'])->name('dashboard');
     Route::get('ebooks', [ProjectController::class, 'index'])->name('projects.index');
     Route::get('assistant', [AssistantController::class, 'index'])->name('assistant');
@@ -70,6 +79,11 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         Route::post('generate', 'generate')->name('generate');
         Route::post('revise', 'revise')->name('revise');
         Route::post('translate', 'translate')->name('translate');
+
+        // Versioning
+        Route::post('versions', [ChapterVersionController::class, 'store'])->name('versions.store');
+        Route::post('versions/{version}/rollback', [ChapterVersionController::class, 'rollback'])->name('versions.rollback');
+        Route::delete('versions/{version}', [ChapterVersionController::class, 'destroy'])->name('versions.destroy');
     });
 
     Route::controller(CommentController::class)->group(function () {

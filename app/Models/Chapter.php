@@ -75,4 +75,14 @@ class Chapter extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    /**
+     * Get the historical versions for the chapter.
+     *
+     * @return HasMany<ChapterVersion, $this>
+     */
+    public function versions(): HasMany
+    {
+        return $this->hasMany(ChapterVersion::class)->latest();
+    }
 }

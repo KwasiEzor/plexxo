@@ -20,6 +20,8 @@ class ProjectUser extends Pivot
     {
         return [
             'role' => UserRole::class,
+            'token_quota' => 'integer',
+            'token_used' => 'integer',
         ];
     }
 }

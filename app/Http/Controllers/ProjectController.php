@@ -152,7 +152,10 @@ class ProjectController extends Controller
 
         return Inertia::render('projects/show', [
             'project' => $project->load([
-                'chapters' => fn ($q) => $q->with(['comments' => fn ($cq) => $cq->with('user')->latest()]),
+                'chapters' => fn ($q) => $q->with([
+                    'comments' => fn ($cq) => $cq->with('user')->latest(),
+                    'versions' => fn ($vq) => $vq->with('user')->latest(),
+                ]),
                 'sources',
                 'collaborators',
             ])->append('total_word_count'),

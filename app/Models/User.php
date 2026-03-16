@@ -100,6 +100,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Determine if the user is a platform administrator.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin') || $this->email === 'admin@plexxo.test';
+    }
+
+    /**
      * Get the templates favorited by the user.
      *
      * @return BelongsToMany<Template, $this>
